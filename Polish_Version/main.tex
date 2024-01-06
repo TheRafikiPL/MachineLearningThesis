@@ -61,22 +61,87 @@ wnioski na temat implementacji takiego rozwiązania w szerszym zakresie.
 W tym rozdziale zostaną szczegółowo omówione komponenty potrzebne do implementacji takowej sztucznej inteligencji. Są to: 
 \begin{itemize}
   \item{Rodzaj uczenia maszynowego}
-  \item{Wykorzystany algorytm do uczenia maszynowego}
-  \item{Silnik do stworzenia gry}
+  \item{Silnik do stworzenia gry oraz pakiet do uczenia maszynowego kompatybilny z silnikiem}
+  \item{Wykorzystywany algorytm do uczenia maszynowego}
   \item{System walki (w przypadku tej pracy - system oparty o tury)}
 \end{itemize}
 
 
 \section{Rodzaje uczenia maszynowego}
-W uczeniu maszynowym można rozgraniczyć 3 główne rodzaje (w oparciu o~\cite{MachineLearningTypes})
+W uczeniu maszynowym można rozgraniczyć 3 jego główne rodzaje (w oparciu o drugi rozdział z~\cite{MachineLearningTypes}):
+\begin{itemize}
+  \item{Nadzorowane (ang. Supervised) - model jest trenowany na danych wejściowych oraz odpowiednich dla nich wartości wynikowych. Na ich podstawie uczy się przewidywania wyniku dla nowych, nieznanych danych wejściowych.}
+  \item{Nienadzorowane (ang. Unsupervised) - model jest trenowany na samych danych wejściowych nie dostając oczekiwanych wyników. Model sam musi odkryć sens jaki stoi za danymi wejściowymi.}
+  \item{Przez wzmacnianie (ang. Reinforcement) - model trenowany za pomocą interakcji trenowanego agenta z wykreowanym otoczeniem. Agent wykonując akcje w otoczeniu dostaje nagrody lub kary w zależności od wyników jego akcji.}
+\end{itemize}
+W przypadku tej pracy użyty zostanie rodzaj uczenia przez wzmacnianie przez charakterystyczną dla niego metodę uczenia przez interakcje. Metoda ta pasuje do gier wideo, gdyż z założenia polegają one na interakcji gracza ze światem gry.
+Model będzie mógł, tak samo jak gracz grający w grę, poprzez ingerowanie za pomocą akcji w otoczenie uczyć się wykonywania najlepszych możliwych akcji w danym momencie. Wiecej wiedzy o tym jak działa uczenie przez wzmacnianie jest zawarte w~\cite{ReinforcementLearning}.
 
+\section{Silniki oraz pakiety do uczenia masszynowego}
+Wybór silnika oraz pakietu do uczenia maszynowego jest ze sobą głęboko powiązany. Ponadto jest on mocno subiektywny, gdyż jest uzależniony od umiejętności autora projektu. Lista popularnych wyborów w zakresie silnika i pakietu do uczenia maszynowego:
+\begin{itemize}
+  \item{Unity z pakietem ML-Agents - Wśród wymienionych gotowych pakietów, ML-Agents jest najstarszym rozwiązaniem (udostępnione w 2017r.\footnote{Repozytorium powstało 8.09.2017r, pierwsza wersja pakietu pochodzi z 16.09.2017r - link do repozytorium \url{https://github.com/Unity-Technologies/ml-agents}}).
+  Dostępne w pakiecie są 2 algorytmy uczenia przez wzmacnianie - PPO oraz SAC\footnote{Więcej informacji o tych algorytmach w rozdziale "\nameref{algorithms}"}. Pakiet posiada własną dokumentację\cite{MLAgentsDocs}. 
+  Sam silnik Unity umożliwia tworzenie aplikacji z grafiką 2D oraz 3D, operuje na łatwym w nauce języku C\# oraz ma rozbudowaną dokumentację\cite{UnityDocs}.}
+  \item{Godot z pakietem RL Agents - Godot jest silnikiem OpenSource o coraz mocniejszej pozycji na rynku. Według dokumentacji\cite{GodotDocs}
+  silnik wspiera oficjalnie 2 języki programowania: autorski język GDScript oraz C\#. Twórcy za pośrednictwem technologii GDExtension dodali możliwość dodania wsparcia dla innych języków przez społeczność.
+  Dzięki temu, można na tym silniku programować również w innych językach programowania takimi jak Rust, C++ czy Swift. Pakiet RL Agents jest najbardziej rozbudowanym pakietem wśród wymienionych.
+  Bazuje na 4 innych pakietach\footnote{Pakiety na których bazuje RL Agents - StableBaseLines3, SampleFactory, CleanRL oraz Ray rllib (stan na 06.01.2024r.)} do uczenia przez wzmacnianie
+  oraz wspiera ponad 12 algorytmów uczenia. Więcej informacji o RL Agents można znaleźć w artykule naukowym poświęconym tej technologii~\cite{GodotRLAgentsArticle} oraz w dokumentacji dostępnej w repozytorium projektu~\cite{GodotRLAgentsDocs}.}
+  \item{Unreal Engine z pakietem Learning Agents - Pod względen innych pakietów Learning Agents jest najmłodszy (powstał na początku 2023r.) oraz najsłabiej udokumentowany. Pakiet operuje algorytmami SAC oraz Q-Learning
+  \footnote{Informacja pochodzi ze źródła (stan na 06.01.2024r.): \url{https://dev.epicgames.com/community/learning/tutorials/8OWY/unreal-engine-learning-agents-introduction}}. Mimo to sam silnik Unreal Engine jest potężnym narzędziem z bardzo dużym wsparciem i możliwościami.
+  Posiada wsparcie dla języka C++ oraz funkcji Blueprints umożliwiającej programowanie wizualne (bez pisania kodu). Dokumentacja zarówno silnika Unreal Engine jak i pakietu Leraning Agents znajduje się w~\cite{UnrealDocs}.}
+  \item{Własny silnik z wykorzystaniem różnych pakietów do uczenia maszynowego - rozwiązanie oferujące największą swobodę, ale też najtrudniejsze w implementacji. Do stworzenia środowiska gry potrzebna jest biblioteka graficzna pomagająca stworzyć silnik np. OpenGL
+  lub pakiet do stworzenia aplikacji okienkowej np. PyGame. Wybierając pakiet do uczenia maszynowego warto szukać wśród pakietów Pythona gdyż ma on ich bardzo dużo. Dla uczenia przez wzmocnienie można zastosować pakiet PyTorch\footnote{Używany w ML-Agents oraz Learning Agents}
+  lub też jeden z 4 pakietów wykorzystywanych przez RL Agents.}
+\end{itemize}
 
+\section{Algorytmy do uczenia maszynowego}
+\label{algorithms}
+
+\section{Systemy walki w turowych grach RPG}
 
 \begin{thebibliography}{9}
   \bibitem{MachineLearningTypes}
   Shagan Sah,
-  \textit{Machine Learning: A Review of Learning Types}
+  \textit{Machine Learning: A Review of Learning Types},
   (2020 r.)
+
+  \bibitem{ReinforcementLearning}
+  Vincent François-Lavet, Peter Henderson, Riashat Islam, Marc G. Bellemare, Joelle Pineau,
+  \textit{An Introduction to Deep Reinforcement Learning},
+  (2018 r.)
+
+  \bibitem{MLAgentsDocs}
+  \textit{Unity ML-Agents Toolkit Documentation} 
+  \url{https://unity-technologies.github.io/ml-agents/ML-Agents-Toolkit-Documentation/}
+  (dostęp 06.01.2024r)
+
+  \bibitem{UnityDocs}
+  \textit{Unity Documentation}
+  \url{https://docs.unity.com}
+  (dostęp 06.01.2024r)
+
+  \bibitem{GodotDocs}
+  \textit{Godot Documentation}
+  \url{https://docs.godotengine.org/en/stable}
+  (dostęp 06.01.2024r)
+
+  \bibitem{GodotRLAgentsArticle}
+  Edward Beeching, Jilles Debangoye, Olivier Simonin, Christian Wolf,
+  \textit{Godot Reinforcement Learning Agents},
+  (2021 r.)
+
+  \bibitem{GodotRLAgentsDocs}
+  \textit{Godot RL Agent Repositorium}
+  \url{https://github.com/edbeeching/godot_rl_agents}
+  (dostęp 06.01.2024r)
+
+  \bibitem{UnrealDocs}
+  \textit{Unreal Engine Documentation}
+  \url{https://docs.unrealengine.com}
+  (dostęp 06.01.2024r)
+  
 \end{thebibliography}
 
 \beforelastpage
