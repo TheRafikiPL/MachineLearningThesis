@@ -58,7 +58,7 @@ wnioski na temat implementacji takiego rozwiązania w szerszym zakresie.
 
 
 \chapter{Technologie}
-W tym rozdziale zostaną szczegółowo omówione komponenty potrzebne do implementacji takowej sztucznej inteligencji. Są to: 
+W tym rozdziale zostaną szczegółowo omówione komponenty potrzebne do implementacji takowej sztucznej inteligencji. Według kolejności wyboru są to: 
 \begin{itemize}
   \item{Rodzaj uczenia maszynowego}
   \item{Silnik do stworzenia gry oraz pakiet do uczenia maszynowego kompatybilny z silnikiem}
@@ -77,29 +77,94 @@ W uczeniu maszynowym można rozgraniczyć 3 jego główne rodzaje (w oparciu o d
 W przypadku tej pracy użyty zostanie rodzaj uczenia przez wzmacnianie przez charakterystyczną dla niego metodę uczenia przez interakcje. Metoda ta pasuje do gier wideo, gdyż z założenia polegają one na interakcji gracza ze światem gry.
 Model będzie mógł, tak samo jak gracz grający w grę, poprzez ingerowanie za pomocą akcji w otoczenie uczyć się wykonywania najlepszych możliwych akcji w danym momencie. Wiecej wiedzy o tym jak działa uczenie przez wzmacnianie jest zawarte w~\cite{ReinforcementLearning}.
 
-\section{Silniki oraz pakiety do uczenia masszynowego}
-Wybór silnika oraz pakietu do uczenia maszynowego jest ze sobą głęboko powiązany. Ponadto jest on mocno subiektywny, gdyż jest uzależniony od umiejętności autora projektu. Lista popularnych wyborów w zakresie silnika i pakietu do uczenia maszynowego:
-\begin{itemize}
-  \item{Unity z pakietem ML-Agents - Wśród wymienionych gotowych pakietów, ML-Agents jest najstarszym rozwiązaniem (udostępnione w 2017r.\footnote{Repozytorium powstało 8.09.2017r, pierwsza wersja pakietu pochodzi z 16.09.2017r - link do repozytorium \url{https://github.com/Unity-Technologies/ml-agents}}).
-  Dostępne w pakiecie są 2 algorytmy uczenia przez wzmacnianie - PPO oraz SAC\footnote{Więcej informacji o tych algorytmach w rozdziale "\nameref{algorithms}"}. Pakiet posiada własną dokumentację\cite{MLAgentsDocs}. 
-  Sam silnik Unity umożliwia tworzenie aplikacji z grafiką 2D oraz 3D, operuje na łatwym w nauce języku C\# oraz ma rozbudowaną dokumentację\cite{UnityDocs}.}
-  \item{Godot z pakietem RL Agents - Godot jest silnikiem OpenSource o coraz mocniejszej pozycji na rynku. Według dokumentacji\cite{GodotDocs}
-  silnik wspiera oficjalnie 2 języki programowania: autorski język GDScript oraz C\#. Twórcy za pośrednictwem technologii GDExtension dodali możliwość dodania wsparcia dla innych języków przez społeczność.
-  Dzięki temu, można na tym silniku programować również w innych językach programowania takimi jak Rust, C++ czy Swift. Pakiet RL Agents jest najbardziej rozbudowanym pakietem wśród wymienionych.
-  Bazuje na 4 innych pakietach\footnote{Pakiety na których bazuje RL Agents - StableBaseLines3, SampleFactory, CleanRL oraz Ray rllib (stan na 06.01.2024r.)} do uczenia przez wzmacnianie
-  oraz wspiera ponad 12 algorytmów uczenia. Więcej informacji o RL Agents można znaleźć w artykule naukowym poświęconym tej technologii~\cite{GodotRLAgentsArticle} oraz w dokumentacji dostępnej w repozytorium projektu~\cite{GodotRLAgentsDocs}.}
-  \item{Unreal Engine z pakietem Learning Agents - Pod względen innych pakietów Learning Agents jest najmłodszy (powstał na początku 2023r.) oraz najsłabiej udokumentowany. Pakiet operuje algorytmami SAC oraz Q-Learning
-  \footnote{Informacja pochodzi ze źródła (stan na 06.01.2024r.): \url{https://dev.epicgames.com/community/learning/tutorials/8OWY/unreal-engine-learning-agents-introduction}}. Mimo to sam silnik Unreal Engine jest potężnym narzędziem z bardzo dużym wsparciem i możliwościami.
-  Posiada wsparcie dla języka C++ oraz funkcji Blueprints umożliwiającej programowanie wizualne (bez pisania kodu). Dokumentacja zarówno silnika Unreal Engine jak i pakietu Leraning Agents znajduje się w~\cite{UnrealDocs}.}
-  \item{Własny silnik z wykorzystaniem różnych pakietów do uczenia maszynowego - rozwiązanie oferujące największą swobodę, ale też najtrudniejsze w implementacji. Do stworzenia środowiska gry potrzebna jest biblioteka graficzna pomagająca stworzyć silnik np. OpenGL
-  lub pakiet do stworzenia aplikacji okienkowej np. PyGame. Wybierając pakiet do uczenia maszynowego warto szukać wśród pakietów Pythona gdyż ma on ich bardzo dużo. Dla uczenia przez wzmocnienie można zastosować pakiet PyTorch\footnote{Używany w ML-Agents oraz Learning Agents}
-  lub też jeden z 4 pakietów wykorzystywanych przez RL Agents.}
-\end{itemize}
+
+\section{Silniki graficzne oraz pakiety do uczenia}
+Wybór silnika graficznego oraz pakietu do uczenia maszynowego jest ze sobą głęboko powiązany. Ponadto jest on mocno subiektywny, gdyż jest uzależniony od umiejętności autora projektu. Lista popularnych wyborów w zakresie silnika i pakietu do uczenia maszynowego:
+\subsection{Unity z pakietem ML-Agents}
+Wśród wymienionych gotowych pakietów, ML-Agents jest najstarszym rozwiązaniem (udostępnione w 2017r.\footnote{Repozytorium powstało 8.09.2017r, pierwsza wersja pakietu pochodzi z 16.09.2017r - link do repozytorium \url{https://github.com/Unity-Technologies/ml-agents}}).
+Dostępne w pakiecie są 2 algorytmy uczenia przez wzmacnianie - PPO oraz SAC\footnote{Więcej informacji o tych algorytmach w rozdziale "\nameref{algorithms}"}. Pakiet posiada własną dokumentację\cite{MLAgentsDocs}. 
+Sam silnik Unity umożliwia tworzenie aplikacji z grafiką 2D oraz 3D, operuje na łatwym w nauce języku C\# oraz ma rozbudowaną dokumentację\cite{UnityDocs}.
+\subsection{Godot z pakietem RL Agents}
+Godot jest silnikiem OpenSource o coraz mocniejszej pozycji na rynku. Według dokumentacji\cite{GodotDocs}
+silnik wspiera oficjalnie 2 języki programowania: autorski język GDScript oraz C\#. Twórcy za pośrednictwem technologii GDExtension dodali możliwość dodania wsparcia dla innych języków przez społeczność.
+Dzięki temu, można na tym silniku programować również w innych językach programowania takimi jak Rust, C++ czy Swift. Pakiet RL Agents jest najbardziej rozbudowanym pakietem wśród wymienionych.
+Bazuje na 4 innych pakietach\footnote{Pakiety na których bazuje RL Agents - StableBaseLines3, SampleFactory, CleanRL oraz Ray rllib (stan na 06.01.2024r.)} do uczenia przez wzmacnianie
+oraz wspiera ponad 12 algorytmów uczenia. Więcej informacji o RL Agents można znaleźć w artykule naukowym poświęconym tej technologii~\cite{GodotRLAgentsArticle} oraz w dokumentacji dostępnej w repozytorium projektu~\cite{GodotRLAgentsDocs}.
+\subsection{Unreal Engine z pakietem Learning Agents}
+Pod względen innych pakietów Learning Agents jest najmłodszy (powstał na początku 2023r.) oraz najsłabiej udokumentowany. Pakiet operuje algorytmami PPO oraz BC (ang. Behavioral Cloning) \footnote{Informacja pochodzi ze źródła (stan na 06.01.2024r.): \url{https://dev.epicgames.com/community/learning/tutorials/8OWY/unreal-engine-learning-agents-introduction}}. 
+Mimo to sam silnik Unreal Engine jest potężnym narzędziem z bardzo dużym wsparciem i możliwościami. Posiada wsparcie dla języka C++ oraz funkcji Blueprints umożliwiającej programowanie wizualne (bez pisania kodu). 
+Dokumentacja zarówno silnika Unreal Engine jak i pakietu Learning Agents znajduje się w~\cite{UnrealDocs}.
+\subsection{Własny silnik z wykorzystaniem różnych pakietów do uczenia maszynowego}
+Rozwiązanie oferujące największą swobodę, ale też najtrudniejsze w implementacji. Do stworzenia środowiska gry potrzebna jest biblioteka graficzna pomagająca stworzyć silnik np. OpenGL
+lub pakiet do stworzenia aplikacji okienkowej np. PyGame. Wybierając pakiet do uczenia maszynowego warto szukać wśród pakietów Pythona gdyż ma on ich bardzo dużo. Dla uczenia przez wzmocnienie można zastosować pakiet PyTorch\footnote{Używany w ML-Agents oraz Learning Agents}
+lub też jeden z 4 pakietów wykorzystywanych przez RL Agents.
+\subsection*{Wybrany silnik i pakiet do uczenia maszynowego}
+Do pracy wybrałem Unity z pakietem ML-Agents przez moje wcześniejsze doświadczenie z Unity oraz zaawansowanie w języku C\#. Uważam jednak, że dużo bardziej rozbudowany RL Agents na silniku Godot jest lepszym wyborem do tego typu projektu, gdyż daje dużo większe pole do dostosowania uczenia dla osiągnięcia lepszych rezultatów.
+
 
 \section{Algorytmy do uczenia maszynowego}
 \label{algorithms}
+Unity ML-Agents posiada 2 algorytmy uczące PPO (ang. Proximal Policy Optimization) oraz SAC (ang. Soft Actor-Critic). Pierwszy z nich jest podstawowym algorytmem używanym w pakiecie. Według \cite{MLAgentsDocs} algorytm PPO jest algorytmem ogólnego przeznaczenia i jest bardziej stabilny w porównaniu z innymi algorytmami uczenia przez wzmacnianie.
+To samo źródło opisuje również różnicę między algorytmem SAC i PPO. SAC jest algorytmem "off-policy" kiedy PPO jest algorytmem "on-policy". Oznacza to że SAC uczy się z doświadczeń zebranych w dowolnym momencie w przeszłości, a podczas uczenia są losowo dobierane do treningu, gdzie w PPO występuje "policy",
+które reguluje podejmowanie decyzji i jest ulepszane z każdą iteracją uczenia. Dodatkowe informacje o algorytmie PPO znajdują się w~\cite{PPOArticle}, a o SAC w~\cite{SACArticle}. Do projektu wybrany został algorytm PPO z uwagi na wcześniej podaną stabilność oraz fakt, że jest on algorytmem będącym ponad 6 lat w pakiecie ML-Agents co sugeruje, że jest on lepiej rozwiniętym rozwiązaniem w pakiecie.
 
 \section{Systemy walki w turowych grach RPG}
+Systemów walki turowej w grach RPG jest bardzo dużo, ale wszystkie charakteryzują się paroma wspólnymi cechami:
+\begin{itemize}
+  \item{Rozgrywka polega na wymianie tur postaci gracza z przeciwnikami}
+  \item{Podczas tury gracz oraz przeciwnicy wykorzystują swoje tury jako zasób do wykonywania akcji}
+  \item{Postacie gracza oraz przeciwnicy posiadają statystyki, które określają ich cechy. Do takich statystyk może należeć np. Obrona zmniejszająca obrażenia otrzymywane przez postać, czy też Atak zwiększający zadawane obrażenia}
+  \item{Postacie gracza oraz przeciwnicy posiadają umiejętności, których mogą używać zużywając tury do wykonywania akcji w środowisku gry}
+  \item{Walka kończy się gdy wszystkie postacie gracza lub wszyscy przeciwnicy umrą}
+\end{itemize}
+Poniżej przedstawię parę podejść do turowego systemu walki wraz z przykładową grą w której został taki system walki użyty:
+\subsection{Standart Turn Battle}
+Najbardziej podstawowy, najpowszechniejszy i zarazem najprostszy system walki turowej. Na początku walki jest tworzona kolejka tur złożona ze wszystkich postaci na scenie na podstawie statystyki Szybkości.
+Gdy postać wykorzysta swoją turę jest przenoszona na koniec kolejki i następna postać w kolejce dostaje możliwość wykorzystania tury. Posiada on 2 główne warianty:
+\begin{enumerate}
+  \item{Postać posiadająca turę od razu po wybraniu ruchu go wykonuje i kolejka przechodzi do następnej osoby. Jest to system wykorzystywany np. w grach z serii Pokemon, czy też jako podstawowy system walki w kreatorze gier RPG o nazwie RPG Maker MV.}
+  \item{Wszystkie postacie na początku wybierają ruch jakiego będą używać podczas aktualnego przejścia przez kolejkę. Po wybraniu walka trwa jedno całe przejście kolejki, aby po ruchu ostatniej postaci w kolejce znów poprosić o wybranie ruchu. Jest to rozwiązanie znane np. z gier z serii Etrian Odyssey.}
+\end{enumerate}
+\subsection{Active Turn Battle}
+System walki charakteryzuje sie tym, że każda postać na początku zaczyna z pustym paskiem tury ładującym się w równych interwałach o wartość zależną od statystyki Szybkości. Im większa owa statystyka, tym szybciej tura jest ładowana.
+Gdy tura jakiejś postaci zostanie w pełni naładowana, walka zatrzymuje się, a postacie z naładowaną turą wybierają akcję jaką mają wykonać. Następnie pasek tury jest ponownie ładowany. Gdy dobiegnie do końca postać wykona wybraną wcześniej akcję i resetuje ładowanie tury do wartości początkowej.
+System ten jest znany z gier z serii Final Fantasy.
+\subsection{Press Turn System}
+Został stworzony i w głównej mierze jest używany w grach firmy Atlus począwszy od gry~\cite{SMT3}. System opiera się o zwiększenie znaczenia tury jako zasobu gdzie na początku gra oddziela fazę ruchu gracza i przeciwnika. Następnie tworzy kolejkę ruchów dla uczestnikow danej fazy na podstawie statystyki Szybkości.
+Następne kroki jakie podejmuje system są zależne od wariantu tego systemu. 
+
+\subsubsection{Wariant klasyczny}
+Występujący w grach z serii Shin Megami Tensei począwszy od \cite{SMT3}. Ilość tur dla strony wykonującej ruchy jest liczona na podstawie ilości postaci po tej stronie. Każda akcja wykonana przez postać jest oceniana przez system i na podstawie oceny zmienia się ilość tur. W przypadku tego modelu musi występować system 
+Elementów, które są przypisane do każdej umiejętności ofensywnej, oraz relacji postaci do Elementu. Elementem mogą być np. żywioły takie jak Ogień, Lód czy Wiatr, natomiast relacjami są skutki Elementu na postać, które potem edytują ilość tur. W grach z tej serii występuje 5 relacji do Elementów:
+\begin{enumerate}
+  \item{Normalna}
+  \item{Słabość}
+  \item{Niewrażliwość}
+  \item{Odbicie}
+  \item{Absorpcja}
+\end{enumerate}
+Jeśli postać trafi w słaby punkt przeciwnika nie traci całej tury, a tura jest "wciskana" (ang. Pressed). "Wciśnięta" tura zachowuje się jak zwykła tura, ale nie może być wciśnięta ponownie. Tury można "wciskać" trafiając w słaby punkt przeciwnika aż do momentu, w którym nie będziemy mieli dostępnych zwykłych tur.
+Jeśli posiadamy zarówno zwykłą turę, jak i "wciśniętą" turę to akcja z normalną relacją do Elementu spowoduje zużycie "wciśniętej" tury. Inne typy relacji zmniejszają ilość tur o określoną ilość np. trafienie w Element z relacją Niewrażliwości może obniżyć ilość tur atakującego o 2 priorytetyzując tury "wciśnięte".
+Jeśli postać postanowi nic nie robić podczas tury, jest ona "wciskana". Gdy stronie wykonującej akcje skończą się tury następuje zmiana stron dla które takie same zasady są zachowane. W przypadku gdy walka jest z silniejszą postacią (tzw. Bossem), która występuje sama system daje tej postaci dodatkową turę na start.
+
+\subsubsection{Wariant uproszczony}
+Występujący w grach z serii Persona począwszy od części trzeciej. W tym przypadku również musi występować system Elementów i relacji opisany jak w wersji klasycznej. Postacie mogą wykonać jedną akcję według kolejki określonej na początku fazy. Jeśli po użyciu umiejętności ofensywnej postać trafi w słaby punkt przeciwnika
+nie traci ruchu i może użyć czegoś jeszcze raz, a przeciwnik dostaje status "Powalenia". Jeśli trafi się przeciwnika o tym statusie w słaby punkt nie dostaje się dodatkowego ruchu i rusza się kolejna osoba z drużyny. Status "Powalenia" znika gdy postać ma się ruszyć. W każdym innym przypadku ruch jest tracony i rusza się kolejna osoba. 
+W grze Persona 5 dodano dodatkowo mechanikę Baton Pass, która umożliwia oddanie swojej tury po trafieniu w słaby punkt innej osobie z drużyny. Jeśli kolejna osoba trafi w słaby punkt może oddać swoją turę kolejnej osobie z drużyny wyłączając każdą osobę która korzystała z tej mechaniki wcześniej. Po wykonaniu akcji nie dającej dodatkowego ruchu, 
+ruch dostaje następna postać.
+
+
+\subsection*{Wybrany system walki}
+Do implementacji został wybrany klasyczny wariant systemu Press Turn. Mimo swojego skomplikowania (co może spowodować dłuższy czas uczenia modelu) posiada on bardzo dużo ciekawych interakcji związanych z turami, które sztuczna inteligencja będzie mogła wykorzystać na swoją korzyść.
+
+
+\chapter{Implementacja}
+
+
+\chapter{Instalacja i instrukcja korzystania}
+
+
+\chapter{Wnioski}
 
 \begin{thebibliography}{9}
   \bibitem{MachineLearningTypes}
@@ -133,7 +198,7 @@ Wybór silnika oraz pakietu do uczenia maszynowego jest ze sobą głęboko powi�
   (2021 r.)
 
   \bibitem{GodotRLAgentsDocs}
-  \textit{Godot RL Agent Repositorium}
+  \textit{Godot RL Agent Repository}
   \url{https://github.com/edbeeching/godot_rl_agents}
   (dostęp 06.01.2024r)
 
@@ -142,6 +207,20 @@ Wybór silnika oraz pakietu do uczenia maszynowego jest ze sobą głęboko powi�
   \url{https://docs.unrealengine.com}
   (dostęp 06.01.2024r)
   
+  \bibitem{PPOArticle}
+  John Schulman, Filip Wolski, Prafulla Dhariwal, Alec Radford, Oleg Klimov, 
+  \textit{Proximal Policy Optimization Algorithms},
+  (2017 r.)
+
+  \bibitem{SACArticle}
+  Tuomas Haarnoja, Aurick Zhou, Pieter Abbeel, Sergey Levine, 
+  \textit{Soft Actor-Critic: Off-Policy Maximum Entropy Deep Reinforcement Learning with a Stochastic Actor},
+  (2018 r.)
+
+  \bibitem{SMT3}
+  Atlus,
+  \textit{Shin Megami Tensei III}
+  (2003 r.)
 \end{thebibliography}
 
 \beforelastpage
