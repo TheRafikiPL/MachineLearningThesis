@@ -1,0 +1,86 @@
+\documentclass{SGGW-thesis}
+
+\INZYNIERSKAtrue
+\WZIMtrue
+
+\title{Zastosowanie metod uczenia maszynowego do stworzenia sztucznej inteligencji w turowych grach RPG}
+\Etitle{The use of machine learning methods to create artificial intelligence in turn-based RPG games}
+\author{Rafał Kuligowski}
+\date{2023}
+\album{205835}
+\thesis{Praca dyplomowa na kierunku:}
+\course{Informatyka}
+\promotor{dra Marka Karwańskiego}
+\pworkplace{Instytut Informatyki Technicznej\\Katedra Zastosowań Matematyki}
+
+\usepackage{hyperref}
+
+\begin{document}
+\maketitle
+\statementpage
+\abstractpage
+{Zastosowanie metod uczenia maszynowego do stworzenia sztucznej inteligencji w turowych grach RPG}
+{Tematem pracy była implementacja }
+{uczenie maszynowe, sztuczna inteligencja, gry RPG, uczenie przez wzmacnianie, turowe systemy walki}
+{The use of machine learning methods to create artificial intelligence in turn-based RPG games}
+{TO CHANGE: The subject of this study was to implement a \LaTeX\ class that allows for text formatting according to the guidelines imposed by the University. The work consists of two
+main parts. The first one describes the most important aspects of the implementation. The second part focuses on how to use the class by people writing the theses.}
+{machine learning, artificial intelligence, RPG games, reinforcement learning, turn-based battle system}
+
+
+{
+  % Spis treści może być złożony z pojedynczą interlinią, np. jeśli jedna linia wychodzi na następną stronę.
+  % W przeciwnym razie spis treści wstawić bez powyższego rozkazu i klamry.
+  \doublespacing
+  \tableofcontents
+}
+
+\startchapterfromoddpage % niezależnie od długości spisu treści pierwszy rozdział zacznie się na nieparzystej stronie
+
+\chapter{Wstęp}
+Sztuczna Inteligencja w przeciągu ostatnich lat objęła wiele dziedzin życia i jest ciągle dynamicznie rozwijana. Jej zastosowanie jest bardzo 
+rozległe, a jedną z branż o dużych perspektywach rozwoju tej technologii jest przemysł rozrywkowy w który wchodzą gry wideo. W grach można zastosować 
+tą technologię do chociażby generowania misji i zadań dla graczy aby nie były one powtarzalne, stworzenia mądrego systemu automatycznej walki dzięki
+któremu gracz nie lubiący tego elementu w grze może go pominąć, czy też do stworzenia sztucznej inteligencji dla przeciwników gracza. Ostatnie z tych 
+przykładowych zastosowań zostanie zgodnie z tematem pracy omówione pod względem teoretycznym i praktycznym.
+
+
+\section{Cel i zakres pracy}
+Praca ma na celu zbadanie możliwości implementacji sztucznej inteligencji dla przeciwnków w grach wideo z gatunku RPG\footnote{RPG (ang. Role Playing Games) 
+- gry w których gracz wciela się w rolę postaci występujących w fikcyjnym świecie. Gracze ponoszą wszelkie konsekwencje swoich akcji jako postać w świecie gry.}
+z turowym systemem walki. Wynikowo otrzymamy 2 aplikacje: trenującą model oraz testującą model w postaci symulatora walki. Treść pracy będą stanowić opisy technologii
+użytych w pracy wraz z alternatywami, opis implementacji rozwiązania na podstawie wybranych wcześniej technologii, instrukcję obsługi napisanej aplikacji oraz
+wnioski na temat implementacji takiego rozwiązania w szerszym zakresie.
+
+
+\chapter{Technologie}
+W tym rozdziale zostaną szczegółowo omówione komponenty potrzebne do implementacji takowej sztucznej inteligencji. Są to: 
+\begin{itemize}
+  \item{Rodzaj uczenia maszynowego}
+  \item{Wykorzystany algorytm do uczenia maszynowego}
+  \item{Silnik do stworzenia gry}
+  \item{System walki (w przypadku tej pracy - system oparty o tury)}
+\end{itemize}
+
+
+\section{Rodzaje uczenia maszynowego}
+W uczeniu maszynowym można rozgraniczyć 3 główne rodzaje (w oparciu o~\cite{MachineLearningTypes})
+
+
+
+\begin{thebibliography}{9}
+  \bibitem{MachineLearningTypes}
+  Shagan Sah,
+  \textit{Machine Learning: A Review of Learning Types}
+  (2020 r.)
+
+  \bibitem{wymagania}
+  \textit{Zarządzenie nr 34 Rektora Szkoły Głównej Gospodarstwa Wiejskiego w Warszawie z dnia 01 czerwca 2016 r.\ w~ sprawie wprowadzenia ,,Wytycznych dotyczących
+przygotowywania prac dyplomowych w~Szkole Głównej Gospodarstwa Wiejskiego w Warszawie''}, Załączniki 1 i~2
+  \url{https://www.sggw.pl/dla-studentow/informacje-formalno-prawne/dokumenty-do-pobrania}
+  $\rightarrow$ Praca dyplomowa (dostęp: 04.01.2017)
+\end{thebibliography}
+
+\beforelastpage
+
+\end{document}
