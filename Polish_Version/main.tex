@@ -149,7 +149,7 @@ Elementów, które są przypisane do każdej umiejętności ofensywnej, oraz rel
 \end{enumerate}
 Jeśli postać trafi w słaby punkt przeciwnika nie traci całej tury, a tura jest "wciskana" (ang. Pressed). To samo dzieje się, gdy postać trafi cios krytyczny. "Wciśnięta" tura zachowuje się jak zwykła tura, ale nie może być wciśnięta ponownie. Tury można "wciskać" trafiając w słaby punkt przeciwnika oraz uderzając ciosami krytycznymi aż do momentu, w którym nie będziemy mieli dostępnych zwykłych tur.
 Jeśli posiadamy zarówno zwykłą turę, jak i "wciśniętą" turę to akcja z normalną relacją do Elementu spowoduje zużycie "wciśniętej" tury. Inne typy relacji zmniejszają ilość tur o określoną ilość np. trafienie w Element z relacją Niewrażliwości może obniżyć ilość tur atakującego o 2 priorytetyzując tury "wciśnięte".
-Jeśli postać postanowi nic nie robić podczas tury, jest ona "wciskana". Gdy stronie wykonującej akcje skończą się tury następuje zmiana stron dla które takie same zasady są zachowane. W przypadku gdy walka jest z silniejszą postacią (tzw. Bossem), która występuje sama system daje tej postaci dodatkową turę na start.
+Jeśli postać postanowi nic nie robić podczas tury, jest ona "wciskana". Gdy stronie wykonującej akcje skończą się tury następuje zmiana stron. W przypadku gdy walka jest z osamotnioną, silniejszą postacią (tzw. Bossem), system daje tej postaci dodatkową turę.
 
 \subsubsection{Wariant uproszczony}
 Występujący w grach z serii Persona począwszy od części trzeciej. W tym przypadku również musi występować system Elementów i relacji opisany jak w wersji klasycznej. Postacie mogą wykonać jedną akcję według kolejki określonej na początku fazy. Jeśli po użyciu umiejętności ofensywnej postać trafi w słaby punkt przeciwnika lub uderzy cios krytyczny,
@@ -256,13 +256,14 @@ Scena posiada następujące elementy UI:
 \end{figure}
 
 \subsection{Implementacja systemu Press Turn}
-System Press Turn zaimplementowany w projekcie działa na 2 obiektach:
+System Press Turn zaimplementowany w projekcie działa na 2 obiektach na scenie BattleScene:
 \begin{itemize}
   \item{BattleManager - odpowiada za logikę walki}
   \item{BattleData - przechowuje dane o postaciach, stanach i umiejętnościach}
 \end{itemize}
-Zanim wczyta się scena BattleScene, w kreatorze jest tworzony obiekt BattleData. Przed wypełnieniem go danymi o postaciach posiada informacje o stanach, 
-jakich postacie mogą doznać (aktualnie zaimplementowany jest tylko stan Śmierci), oraz spis wszystkich umiejętności. Obiekt jest wypełniany danymi z
+\subsubsection{Zaczytywanie danych oraz startowa konfiguracja obiektów}
+Zanim wczyta się scena BattleScene, w kreatorze jest tworzony obiekt BattleData. Przed wypełnieniem go danymi o postaciach posiada listę ze stanami, 
+jakich postacie mogą doznać (aktualnie zaimplementowany jest tylko stan Śmierci), oraz listę wszystkich umiejętności. Obiekt jest wypełniany danymi z
 kreatora dotyczącymi postaci. Dane te są zapisywane do dwóch list:
 \begin{itemize}
   \item{party - przechowująca postaci sterowane przez gracza}
@@ -279,9 +280,10 @@ Po wczytaniu się sceny, BattleManager zostaje zainicjowany. Posiada on następu
   \item{currentIndex - wartość pomocnicza przechowująca indeks aktualnie poruszającej się postaci}
   \item{turnQueue - lista z wartościami prawda fałsz odpowiadająca ilości tur (zwykłe tury to wartości true, "wciśnięte" tury to wartości false)}
 \end{itemize}
-
+Po wczytaniu wszystkich potrzebnych zasobów, BattleManager ustawia wartości gameState na START\_SIDE oraz isBusy na false.
 \subsubsection{Główna pętla systemu walki}
-Po wczytaniu wszystkich potrzebnych zasobów, BattleManager ustawia wartości gameState na START\_SIDE oraz isBusy na false. Sam system walki operuje na funkcji Update wykonującej się co klatkę. Dokoładniejszy opis działania funkcji Update można znaleźć w~\cite{UnityDocs}. 
+\label{petlagry}
+System walki operuje na funkcji Update wykonującej się co klatkę.
 \begin{figure}[H]
   \centering
   \includegraphics[height=7cm]{updatebattle.JPG}
@@ -289,7 +291,7 @@ Po wczytaniu wszystkich potrzebnych zasobów, BattleManager ustawia wartości ga
   \label{fig:UpdateBattle}
 \end{figure}
 
-Cała pętla gry operuje na wywoływaniu 4 funkcji podanych na \hyperref[fig:UpdateBattle]{Rysunek 3.4}. Przedstawiona w postaci listy kroków prezentuje się następująco:
+Funkcja obsługuje tzw. pętle gry czyli algorytm zapętlający rozgrywkę. Pętla gry operuje na wywoływaniu 4 funkcji widocznych na \hyperref[fig:UpdateBattle]{Rysunek 3.4}. Pętla gry przedstawiona w postaci listy kroków prezentuje się następująco:
 \begin{enumerate}
   \item{Wywołuje się StartSide(), które uzupełnia listę tur - turnQueue oraz listę indeksów postaci - moveQueue}
   \item{Następuje aktualizacja currentIndex o pierwszy indeks z moveQueue, przenosząc ten index później na koniec listy moveQueue. Potem zmienia gameState na START\_TURN}
@@ -300,13 +302,14 @@ Cała pętla gry operuje na wywoływaniu 4 funkcji podanych na \hyperref[fig:Upd
   \item{Na koniec gameState jest zmieniany na END\_TURN}
   \item{Wywołuje się EndTurn(), które sprawdza warunki wygranej i przegranej (jeśli któryś z warunków jest prawdziwy, przejdź do 11.)}
   \item{Jeśli turnQueue jest puste, zmień stan na END\_SIDE, w przeciwnym wypadku przejdź do punktu 2.}
-  \item{Wywołaj funkcję END\_SIDE, któa zmienia wartość isPlayerTurn na przeciwną sobie i zmienia wartość gameState na START\_SIDE. Przejdź do punktu 1.}
+  \item{Wywołaj funkcję END\_SIDE, która zmienia wartość isPlayerTurn na przeciwną sobie i zmienia wartość gameState na START\_SIDE. Przejdź do punktu 1.}
   \item{Pokaż ekran końcowy i opuść pętlę gry}
 \end{enumerate}
 
-\subsubsection{Funkcja UseSkill() oraz wykorzystanie statystyk}
-Głównym zadaniem funkcji jest pobranie zasobów (many oraz zdrowia) potrzebnych do użycia wybranej umiejętności, aktywacja tejże umiejętności na wybranym celu oraz zmiana tur na podstawie wyniku aktywacji.
-Gdy dochodzi do aktywacji umiejętności, statystyki postaci atakującej i broniącej są przekazywane do funkcji przeliczającej obrażenia. Formuły obrażeń prezentują się nastepująco:
+\subsubsection{Działanie funkcji UseSkill() oraz wykorzystanie statystyk postaci}
+Wspomniana w pętli gry funkcja UseSkill() pełni kluczową funkcję w działaniu systemu walki. Głównym jej zadaniem jest pobranie zasobów (many oraz zdrowia) potrzebnych do użycia wybranej umiejętności, 
+aktywacja umiejętności na wybranym celu oraz zmiana tur na podstawie oceny relacji postaci do elementu umiejętności. Gdy dochodzi do aktywacji umiejętności, statystyki postaci atakującej i broniącej są przekazywane do funkcji przeliczającej obrażenia. 
+Formuły obrażeń prezentują się nastepująco:
 \[PhysicalAttack = 5*\sqrt{\frac{a.Strength}{b.Dexterity}*m}\]\[MagicalAttack = 5*\sqrt{\frac{a.Magic}{b.Dexterity}*m}\]
 gdzie,
 \begin{itemize}
@@ -318,14 +321,83 @@ Jedyna niewykorzystywana nigdzie statystyka to Luck, z uwagi na brak planowanej 
 
 
 \section{Część aplikacji automatycznie trenująca model}
-Ta część aplikacji służy do uczenia modelu, jak poruszać się po systemie Press Turn. Składa się z 1 sceny Unity: TrainingScene.
-
+Ta część aplikacji służy do trenowania modelu za pomocą pakietu ML-Agents. Składa się z 1 sceny Unity: TrainingScene.
 
 \subsection{Implementacja ML-Agents}
+Aby zacząć uczyć model w technice uczenia przez wzmacnianie potrzebne są środowisko oraz uczący się w nim agent.
+\subsubsection{Środowisko}
+Środowiskiem jest stworzony wcześniej system Press Turn z którego zostały usunięte niepotrzebne funkcje związane z UI. W rolę gracza wcieli się generator liczb losowych. Będzie on wybierał losową, dostępną umiejętność.
+Ilość postaci po stronie gracza jak i statystyki, umiejętności oraz relacje z Elementami będą losowane dla wszystkich postaci. Aby umożliwić powyższe zmieny, dodane zostały następujące elementy do środowiska:
+\begin{itemize}
+  \item{turns - ilość minionych tur}
+  \item{maxTurns - maksymalna ilość tur po której środowisko powróci do stanu początkowego}
+  \item{pointsMin - minimalna wartość wykorzystywana do losowania HP oraz MP postaci. Może przyjąć wartość z zakresu <1,pointsMax)}
+  \item{pointsMax - maksymalna wartość wykorzystywana do losowania HP oraz MP postaci. Może przyjąć wartość z zakresu (pointsMin,9999>}
+  \item{statMin - minimalna wartość wykorzystywana do losowania statystyk postaci. Może przyjąć wartość z zakresu <1,statMax)}
+  \item{statMax - maksymalna wartość wykorzystywana do losowania statystyk postaci. Może przyjąć wartość z zakresu (statMin,99>}
+  \item{minActors - minimalna wartość wykorzystywana do losowania ilości postaci po stronie gracza. Może przyjąć wartość z zakresu <1,maxActors)}
+  \item{maxActors - maksymalna wartość wykorzystywana do losowania ilości postaci po stronie gracza. Może przyjąć wartość z zakresu (minActors,4>}
+\end{itemize}
 
+\subsubsection{Agent}
+Implementacja oparta o artykuł~\cite{MLAgentsStartegyGuide}. Aby zaimplementować Agenta za pomocą pakietu ML-Agents należało stworzyć nową klasę dziedziczącą po klasie Agent. Klasa Agent wymaga do działania przeciążenia niektórych swoich metod.
+Lista przeciążonych metod wraz z opisem nowej funkcjonalności:
+\begin{itemize}
+  \item{void Heurestic() - z metody została usunięta cała funkcjonalność, przez fakt powodowania niepotrzebnych ostrzeżeń w konsoli Unity. Funkcja pozostaje pusta ze względu na nie używanie jej w projekcie.}
+  \item{void CollectObservations() - metoda zajmuje się zebraniem danych ze środowiska oraz wysłanie ich do analizy(spis wszystkich zmiennych branych pod uwagę podczas uczenia został opisany niżej)}
+  \item{void OnActionReceived() - metoda odczytuje wybrane przez Agenta wartości i przekazuje je do środowiska}
+  \item{void WriteDiscreteMask() - metoda powoduje zablokowanie wartości tak, aby sztuczna inteligencja nie mogła ich wybrać podczas predykcji. Tymi wartościami są umiejętności, których sztuczna inteligencja nie posiada lub nie ma wystarczających zasobów aby ich użyć, oraz martwi lub nie istniejący członkowie drużyny gracza.}
+  \item{void OnEpisodeBegin() - metoda przywraca stan początkowy środowiska w którym się znajduje}
+\end{itemize}
+Aby ML-Agents mogło działać poprawnie w systemie turowym, trzeba było dodatkowo wyłączyć Automatyczne Kroki Środowiskowe poprzez funkcję Awake() Agenta. Do ciała funkcji należało wpisać: \verb|Academy.Instance.AutomaticSteppingEnabled = false;|
+Powoduje to również konieczność zaimplementowania manualnego wykonywania kroku środowiskowego za pomocą: \verb|Academy.Instance.EnvironmentStep();|
+Dodatkowo do klasy zostały zaimplementowane dodatkowe metody oraz właściwości pomocnicze opisane w~\cite{MLAgentsStartegyGuide}. Są to:
+\begin{itemize}
+  \item{firstRun - wartość prawda/fałsz określająca czy jest to pierwsze wywołanie metody OnEpisodeBegin()}
+  \item{tryingToReset - wartość prawda/fałsz informująca, że środowisko jest w trakcie resetu}
+  \item{resultGenerated - wartość prawda/fałsz informująca, że model skończył przewidywać wartość i ją zwrócił do środowiska}
+  \item{NotifyEndEpisode() - metoda daje nagrodę sztucznej inteligencji za wykonane akcje i kończy epizod}
+  \item{GetOutput() - metoda czekająca na to, aż ML-Agents zwróci wynik}
+\end{itemize}
 
+\subsubsection{Interakcja środowiska z agentem}
+Aby cała struktura uczenia działała, trzeba sprawić aby agent posiadał interakcje ze środowiskiem. W tym celu dostosowano wspomniany w sekcji \nameref{petlagry} algorytm petli gry na potrzeby trenowania modelu.
+Nowy algorytm pętli gry wygląda następująco:
+\begin{enumerate}
+  \item{Wywołuje się funkcja OnEpisodeBegin() i całe środowisko jest na nowo losowane, następnie ustawiana jest wartość gameState na START\_SIDE}
+  \item{Wywołuje się StartSide(), które uzupełnia listę tur - turnQueue oraz listę indeksów postaci - moveQueue}
+  \item{Następuje aktualizacja currentIndex o pierwszy indeks z moveQueue, przenosząc ten index później na koniec listy moveQueue. Potem zmienia gameState na START\_TURN}
+  \item{Wywołuje się StartTurn(), które ustawia wartość currentCharacter na aktualnie poruszającą się postać.}
+  \item{Jeśli ruch wykonuje gracz aplikacja losuje umiejętność i cel dla aktualnej postaci}
+  \item{Jeśli ruch wykonuje przeciwnik uruchamiana jest funkcja AIActions() która prosi o podjęcie decyzji trenowany model ML-Agents w wyborze celu oraz umiejętności. Po otrzymaniu wyniku wykonuje się funkcja EnvironmentStep()}
+  \item{Po wyborze umiejętności i celu wykonuje się funkcja UseSkill() uruchamiająca logikę systemu Press Turn}
+  \item{Na koniec gameState jest zmieniany na END\_TURN}
+  \item{Wywołuje się EndTurn(), które sprawdza warunki wygranej, przegranej oraz limitu tur (jeśli któryś z warunków jest prawdziwy, przejdź do 12.)}
+  \item{Jeśli turnQueue jest puste, zmień stan na END\_SIDE, w przeciwnym wypadku przejdź do punktu 3.}
+  \item{Wywołaj funkcję END\_SIDE, która zmienia wartość isPlayerTurn na przeciwną sobie i zmienia wartość gameState na START\_SIDE. Przejdź do punktu 2.}
+  \item{Wywołaj funkcje NotifyEndEpisode(), która daje nagrodę dla modelu i powoduje przejście do punktu 1.}
+\end{enumerate}
+
+\subsubsection{Zmienne wybrane do uczenia}
+Zmiennych uczących jest łączne 87. W ich skład wchodzą:
+\begin{enumerate}
+  \item{Ilość zwykłych tur}
+  \item{Ilość "wciśniętych" tur}
+  \item{Statystyki Aktora 1 - 17 zmiennych}
+  \item{Statystyki Aktora 2 - 17 zmiennych}
+  \item{Statystyki Aktora 3 - 17 zmiennych}
+  \item{Statystyki Aktora 4 - 17 zmiennych}
+  \item{Statystyki Przeciwnika - 17 zmiennych}
+\end{enumerate}
+Wszystkie zmienne są poddane normalizacji według wzoru:
+\[normValue = \frac{value-minValue}{maxValue-minValue}\]
+W przypadku gdy aktor nie został stworzony w danym epizodzie, wszystkie 17 przypisanych do niego zmiennych przyjmuje wartość 0.
 \subsection{UI}
-
+\begin{figure}[H]
+  \centering
+  \includegraphics[height=7cm]{trainingui.JPG}
+  \caption{Widok UI do nadzoru trenowania modelu}
+\end{figure}
 
 \chapter{Instrukcja instalacji i korzystania}
 
@@ -387,6 +459,13 @@ Ta część aplikacji służy do uczenia modelu, jak poruszać się po systemie 
   Atlus,
   \textit{Shin Megami Tensei III},
   (2003 r.)
+
+  \bibitem{MLAgentsStartegyGuide}
+  Andrew Zuo,
+  \textit{Guide On Using Unity ML Agents For A Turn Based Strategy Game},
+  (2021 r.),
+  \url{https://andrewzuo.com/guide-on-using-unity-ml-agents-for-a-turn-based-strategy-game-9e52e6945a31} 
+  (dostęp 06.01.2024r)
 \end{thebibliography}
 
 \beforelastpage
