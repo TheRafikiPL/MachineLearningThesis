@@ -13,7 +13,10 @@
 \promotor{dra Marka Karwańskiego}
 \pworkplace{Instytut Informatyki Technicznej\\Katedra Zastosowań Matematyki}
 
+\usepackage[bottom]{footmisc}
 \usepackage{hyperref}
+\usepackage{subfigure}
+\usepackage{float}
 
 \begin{document}
 \maketitle
@@ -135,33 +138,196 @@ Następne kroki jakie podejmuje system są zależne od wariantu tego systemu.
 
 \subsubsection{Wariant klasyczny}
 Występujący w grach z serii Shin Megami Tensei począwszy od \cite{SMT3}. Ilość tur dla strony wykonującej ruchy jest liczona na podstawie ilości postaci po tej stronie. Każda akcja wykonana przez postać jest oceniana przez system i na podstawie oceny zmienia się ilość tur. W przypadku tego modelu musi występować system 
-Elementów, które są przypisane do każdej umiejętności ofensywnej, oraz relacji postaci do Elementu. Elementem mogą być np. żywioły takie jak Ogień, Lód czy Wiatr, natomiast relacjami są skutki Elementu na postać, które potem edytują ilość tur. W grach z tej serii występuje 5 relacji do Elementów:
+Elementów, które są przypisane do każdej umiejętności ofensywnej, oraz relacji postaci do Elementu. Elementem mogą być np. żywioły takie jak Ogień, Lód czy Wiatr, natomiast relacjami są skutki Elementu na postać, które potem edytują ilość tur. W grach z tej serii występuje 6 relacji do Elementów:
 \begin{enumerate}
   \item{Normalna}
   \item{Słabość}
+  \item{Odporność}
   \item{Niewrażliwość}
   \item{Odbicie}
   \item{Absorpcja}
 \end{enumerate}
-Jeśli postać trafi w słaby punkt przeciwnika nie traci całej tury, a tura jest "wciskana" (ang. Pressed). "Wciśnięta" tura zachowuje się jak zwykła tura, ale nie może być wciśnięta ponownie. Tury można "wciskać" trafiając w słaby punkt przeciwnika aż do momentu, w którym nie będziemy mieli dostępnych zwykłych tur.
+Jeśli postać trafi w słaby punkt przeciwnika nie traci całej tury, a tura jest "wciskana" (ang. Pressed). To samo dzieje się, gdy postać trafi cios krytyczny. "Wciśnięta" tura zachowuje się jak zwykła tura, ale nie może być wciśnięta ponownie. Tury można "wciskać" trafiając w słaby punkt przeciwnika oraz uderzając ciosami krytycznymi aż do momentu, w którym nie będziemy mieli dostępnych zwykłych tur.
 Jeśli posiadamy zarówno zwykłą turę, jak i "wciśniętą" turę to akcja z normalną relacją do Elementu spowoduje zużycie "wciśniętej" tury. Inne typy relacji zmniejszają ilość tur o określoną ilość np. trafienie w Element z relacją Niewrażliwości może obniżyć ilość tur atakującego o 2 priorytetyzując tury "wciśnięte".
 Jeśli postać postanowi nic nie robić podczas tury, jest ona "wciskana". Gdy stronie wykonującej akcje skończą się tury następuje zmiana stron dla które takie same zasady są zachowane. W przypadku gdy walka jest z silniejszą postacią (tzw. Bossem), która występuje sama system daje tej postaci dodatkową turę na start.
 
 \subsubsection{Wariant uproszczony}
-Występujący w grach z serii Persona począwszy od części trzeciej. W tym przypadku również musi występować system Elementów i relacji opisany jak w wersji klasycznej. Postacie mogą wykonać jedną akcję według kolejki określonej na początku fazy. Jeśli po użyciu umiejętności ofensywnej postać trafi w słaby punkt przeciwnika
-nie traci ruchu i może użyć czegoś jeszcze raz, a przeciwnik dostaje status "Powalenia". Jeśli trafi się przeciwnika o tym statusie w słaby punkt nie dostaje się dodatkowego ruchu i rusza się kolejna osoba z drużyny. Status "Powalenia" znika gdy postać ma się ruszyć. W każdym innym przypadku ruch jest tracony i rusza się kolejna osoba. 
-W grze Persona 5 dodano dodatkowo mechanikę Baton Pass, która umożliwia oddanie swojej tury po trafieniu w słaby punkt innej osobie z drużyny. Jeśli kolejna osoba trafi w słaby punkt może oddać swoją turę kolejnej osobie z drużyny wyłączając każdą osobę która korzystała z tej mechaniki wcześniej. Po wykonaniu akcji nie dającej dodatkowego ruchu, 
+Występujący w grach z serii Persona począwszy od części trzeciej. W tym przypadku również musi występować system Elementów i relacji opisany jak w wersji klasycznej. Postacie mogą wykonać jedną akcję według kolejki określonej na początku fazy. Jeśli po użyciu umiejętności ofensywnej postać trafi w słaby punkt przeciwnika lub uderzy cios krytyczny,
+nie traci ruchu i może użyć czegoś jeszcze raz, a przeciwnik dostaje status "Powalenia". Jeśli trafi się przeciwnika o tym statusie ciosem krytycznym lub w słaby punkt, nie dostaje się dodatkowego ruchu i rusza się kolejna osoba z drużyny. Status "Powalenia" znika gdy postać ma się ruszyć. W każdym innym przypadku ruch jest tracony i rusza się kolejna osoba. 
+W grze Persona 5 dodano dodatkowo mechanikę Baton Pass, która umożliwia oddanie swojej tury po trafieniu krytycznym lub w słaby punkt innej osobie z drużyny. Jeśli kolejna osoba trafi cios krytyczny lub w słaby punkt może oddać swoją turę kolejnej osobie z drużyny wyłączając każdą osobę która korzystała z tej mechaniki wcześniej. Po wykonaniu akcji nie dającej dodatkowego ruchu, 
 ruch dostaje następna postać.
 
 
 \subsection*{Wybrany system walki}
-Do implementacji został wybrany klasyczny wariant systemu Press Turn. Mimo swojego skomplikowania (co może spowodować dłuższy czas uczenia modelu) posiada on bardzo dużo ciekawych interakcji związanych z turami, które sztuczna inteligencja będzie mogła wykorzystać na swoją korzyść.
+Do implementacji został wybrany klasyczny wariant systemu Press Turn z gry \cite{SMT3}. Mimo swojego skomplikowania (co może spowodować dłuższy czas uczenia modelu) posiada on bardzo dużo ciekawych interakcji związanych z turami, które sztuczna inteligencja będzie mogła wykorzystać na swoją korzyść.
 
 
 \chapter{Implementacja}
+Aplikacja jest podzielona na 2 części: automatycznie trenującą model oraz testującą model w symulatorze walki.
 
 
-\chapter{Instalacja i instrukcja korzystania}
+\section{Część aplikacji testująca model}
+Ta część aplikacji została zaimplementowana jako pierwsza w celu przygotowania systemu Press-Turn. Składa się z 3 scen Unity: MainMenu, CharacterCreator oraz BattleScene.
+
+\subsection{Scena MainMenu}
+Menu Główne składa się z 2 widoków: Panelu głównego oraz opcji. W panelu głównym są dostępne przyciski START, CONFIG oraz EXIT. START służy do uruchomienia kreatora postaci, CONFIG otwiera widok opcji, a EXIT służy do zamknięcia aplikacji\footnote{Przycisk zamknięcia aplikacji nie działa podczas testowania aplikacji na silniku, tylko gdy aplikacja zostanie wyeksportowana.}.
+Widok opcji posiada suwaki zmieniające głośność muzyki oraz dźwięków w aplikacji i przycisk zapisujący ustawienia.
+
+\begin{figure}[H]
+  \hfill
+  \subfigure[Widok panelu głównego]{\includegraphics[width=0.45\textwidth]{menuscreen1.JPG}}
+  \hfill
+  \subfigure[Widok opcji]{\includegraphics[width=0.45\textwidth]{menuscreen2.JPG}}
+  \hfill
+  \caption{Zrzuty ekranu przedstawiające menu główne}
+\end{figure}
+
+\subsection{Scena CharacterCreator}
+Kreator postaci składa się z 2 widoków: panelu wyboru liczby aktorów w drużynie oraz kreatora postaci. Oba widoki posiadają też przycisk BACK powracający do menu głównego.
+
+
+\subsubsection{Panel wyboru liczby aktorów}
+Panel składa się z suwaka przyjmującego wartości całkowite w zakresie 1-4 oraz przycisk potwierdzający ilość aktorów o treści ACCEPT. Po jego wciśnięciu widok zmienia się na kreator postaci.
+
+\subsubsection{Kreator postaci}
+Składa się z przycisku Restart Actors wracającego do widoku wyboru liczby aktorów, przycisku Start Battle zaczynającego walkę gdy wszyscy aktorzy mają wypełnione pola statystyk, pola wyboru aktualnie edytowanego aktora oraz obszernego ekranu do wprowadzania statystyk postaci.
+Lista statystyk postaci (sens statystyk zostanie wyjaśniony podczas omawiania sceny walki):
+\begin{enumerate}
+  \item{HP (ang. Health Points, pl. Punkty Życia) - zakres 1-9999}
+  \item{MP (ang. Mana Points, pl. Punkty Many) - zakres 1-9999}
+  \item{Strength (pl. Siła) - zakres 1-99}
+  \item{Magic (pl. Magia) - zakres 1-99}
+  \item{Dexterity (pl. Sprawność) - zakres 1-99}
+  \item{Agility (pl. Zwinność) - zakres 1-99}
+  \item{Luck (pl. Szczęście) - zakres 1-99}
+\end{enumerate}
+Postacie posiadają również Elementy i odpowiadające im relacje. Lista Elementów (kolejność od lewej według ustawienia w widoku):
+\begin{enumerate}
+  \item{Obrażenia fizyczne}
+  \item{Ogień}
+  \item{Lód}
+  \item{Wiatr}
+  \item{Elektryczność}
+  \item{Światłość}
+  \item{Ciemność}
+  \item{Nadzwyczajny - ukryty element, zawsze o relacji neutralnej}
+\end{enumerate}
+Lista relacji Elementu z postacią (wraz ze skrótem widocznym w kreatorze, wpływem na tury oraz wpływem na obrażenia):
+\begin{enumerate}
+  \item{Neutralny, skrót: "-", wpływ na turę: utrata 1 tury, wpływ na obrażenia: brak}
+  \item{Słabość, skrót: "Wk", wpływ na turę: "wciśnięcie" 1 tury, wpływ na obrażenia: +20\%}
+  \item{Odporność, skrót: "Str", wpływ na turę: utrata 1 tury, wpływ na obrażenia: -20\%}
+  \item{Niewrażliwość, skrót: "Null", wpływ na turę: utrata 2 tur, wpływ na obrażenia: zniwelowanie obrażeń}
+  \item{Odbicie, skrót: "Rep", wpływ na turę: utrata 4 tur, wpływ na obrażenia: odbicie wartości obrażeń (obrażenia odbite również podlegają ocenie, ale nie wpływają na tury oraz nie mogą odbić się drugi raz)}
+  \item{Absorbcja, skrót: "Abs", wpływ na turę: utrata 4 tur, wpływ na obrażenia: wyleczenie o wartość obrażeń}
+\end{enumerate}
+W skład kreatora wchodzi również lista z wyborem umiejętności. Każdy rekord listy posiada: pole wyboru umiejętności, jej nazwę, koszt oraz przypisany Element.
+
+\begin{figure}[H]
+  \hfill
+  \subfigure[Widok panelu wyboru liczby aktorów]{\includegraphics[width=0.45\textwidth]{creatorscreen1.JPG}}
+  \hfill
+  \subfigure[Widok kreatora postaci]{\includegraphics[width=0.45\textwidth]{creatorscreen2.JPG}}
+  \hfill
+  \caption{Zrzuty ekranu przedstawiające kreator postaci}
+\end{figure}
+
+\subsection{Scena BattleScene}
+Rozbudowana scena przedstawiająca informacje na temat aktualnego stanu walki. Stworzona na podstawie UI z gry~\cite{SMT3}.
+
+Scena posiada następujące elementy UI:
+\begin{itemize}
+  \item{Przycisk Leave Battle - służy do wyjścia z walki}
+  \item{Lista tur - czerwone znaczniki oznaczają "wciśnięte" tury, a zielone zwykłe tury}
+  \item{Widok drużyny gracza - generowany automatycznie, obramowanie pokazuje kto aktualnie posiada ruch}
+  \item{Widok przeciwnika - sterowany przez wytrenowany model przeciwnik z widocznym paskiem zdrowia}
+  \item{Lista umiejętności - umożliwia wybór umiejętności aktualnie ruszającej się postaci. Po wyborze umiejętności gracz jest proszony o cel.}
+  \item{Dziennik zdarzeń walki - pokazuje umiejętności użyte od początku walki przez jakąkolwiek postać}
+  \item{Stan drużyny gracza - pokazuje paski z imionami wszystkich postaci gracza, jak i ich stanem zdrowia i many}
+\end{itemize}
+
+\begin{figure}[H]
+  \hfill
+  \subfigure[UI gry~\cite{SMT3}]{\includegraphics[width=0.45\textwidth]{smt3_screenshot.jpg}}
+  \hfill
+  \subfigure[UI sceny walki w projekcie]{\includegraphics[width=0.45\textwidth]{battlescreen.JPG}}
+  \hfill
+  \caption{Zrzuty ekranu porównujące UI stworzone w projekcie do występującego w grze \cite{SMT3}}
+\end{figure}
+
+\subsection{Implementacja systemu Press Turn}
+System Press Turn zaimplementowany w projekcie działa na 2 obiektach:
+\begin{itemize}
+  \item{BattleManager - odpowiada za logikę walki}
+  \item{BattleData - przechowuje dane o postaciach, stanach i umiejętnościach}
+\end{itemize}
+Zanim wczyta się scena BattleScene, w kreatorze jest tworzony obiekt BattleData. Przed wypełnieniem go danymi o postaciach posiada informacje o stanach, 
+jakich postacie mogą doznać (aktualnie zaimplementowany jest tylko stan Śmierci), oraz spis wszystkich umiejętności. Obiekt jest wypełniany danymi z
+kreatora dotyczącymi postaci. Dane te są zapisywane do dwóch list:
+\begin{itemize}
+  \item{party - przechowująca postaci sterowane przez gracza}
+  \item{enemies - przechowująca informacje o postaci przeciwnika}
+\end{itemize}
+Po wczytaniu się sceny, BattleManager zostaje zainicjowany. Posiada on następujące wartości:
+\begin{itemize}
+  \item{selectedSkill - przechowuje informacje na temat wybranej przez postać umiejętności}
+  \item{isPlayerTurn - wartość prawda/fałsz mówiąca czy rusza się gracz, bazowo ustawiony na prawdę}
+  \item{isBusy - wartość prawda/fałsz odpowiadająca za przejście do następnego stadium walki, bazowo ustawiony na prawdę}
+  \item{gameState - enumerator mówiący jakie jest stadium walki, może przyjąć jedną z następujących wartości: START\_SIDE, START\_TURN, END\_SIDE, END\_TURN}
+  \item{currentCharacter - przechowuje informacje o aktualnie poruszającej się postaci}
+  \item{moveQueue - lista z indeksami postaci ułożona w kolejności poruszania się (sortowana po statystyce Agility, od największej wartości do najmniejszej)}
+  \item{currentIndex - wartość pomocnicza przechowująca indeks aktualnie poruszającej się postaci}
+  \item{turnQueue - lista z wartościami prawda fałsz odpowiadająca ilości tur (zwykłe tury to wartości true, "wciśnięte" tury to wartości false)}
+\end{itemize}
+
+\subsubsection{Główna pętla systemu walki}
+Po wczytaniu wszystkich potrzebnych zasobów, BattleManager ustawia wartości gameState na START\_SIDE oraz isBusy na false. Sam system walki operuje na funkcji Update wykonującej się co klatkę. Dokoładniejszy opis działania funkcji Update można znaleźć w~\cite{UnityDocs}. 
+\begin{figure}[H]
+  \centering
+  \includegraphics[height=7cm]{updatebattle.JPG}
+  \caption{Funkcja Update w obiekcie BattleManager}
+  \label{fig:UpdateBattle}
+\end{figure}
+
+Cała pętla gry operuje na wywoływaniu 4 funkcji podanych na \hyperref[fig:UpdateBattle]{Rysunek 3.4}. Przedstawiona w postaci listy kroków prezentuje się następująco:
+\begin{enumerate}
+  \item{Wywołuje się StartSide(), które uzupełnia listę tur - turnQueue oraz listę indeksów postaci - moveQueue}
+  \item{Następuje aktualizacja currentIndex o pierwszy indeks z moveQueue, przenosząc ten index później na koniec listy moveQueue. Potem zmienia gameState na START\_TURN}
+  \item{Wywołuje się StartTurn(), które ustawia wartość currentCharacter na aktualnie poruszającą się postać.}
+  \item{Jeśli ruch wykonuje gracz aplikacja pokazuje dostępne umiejętności postaci i czeka na reakcję użytkownika}
+  \item{Jeśli ruch wykonuje przeciwnik uruchamiana jest funkcja AIActions() która prosi o podjęcie decyzji wytrenowany model ML-Agents w wyborze celu oraz umiejętności}
+  \item{Po wyborze umiejętności i celu wykonuje się funkcja UseSkill() uruchamiająca logikę systemu Press Turn}
+  \item{Na koniec gameState jest zmieniany na END\_TURN}
+  \item{Wywołuje się EndTurn(), które sprawdza warunki wygranej i przegranej (jeśli któryś z warunków jest prawdziwy, przejdź do 11.)}
+  \item{Jeśli turnQueue jest puste, zmień stan na END\_SIDE, w przeciwnym wypadku przejdź do punktu 2.}
+  \item{Wywołaj funkcję END\_SIDE, któa zmienia wartość isPlayerTurn na przeciwną sobie i zmienia wartość gameState na START\_SIDE. Przejdź do punktu 1.}
+  \item{Pokaż ekran końcowy i opuść pętlę gry}
+\end{enumerate}
+
+\subsubsection{Funkcja UseSkill() oraz wykorzystanie statystyk}
+Głównym zadaniem funkcji jest pobranie zasobów (many oraz zdrowia) potrzebnych do użycia wybranej umiejętności, aktywacja tejże umiejętności na wybranym celu oraz zmiana tur na podstawie wyniku aktywacji.
+Gdy dochodzi do aktywacji umiejętności, statystyki postaci atakującej i broniącej są przekazywane do funkcji przeliczającej obrażenia. Formuły obrażeń prezentują się nastepująco:
+\[PhysicalAttack = 5*\sqrt{\frac{a.Strength}{b.Dexterity}*m}\]\[MagicalAttack = 5*\sqrt{\frac{a.Magic}{b.Dexterity}*m}\]
+gdzie,
+\begin{itemize}
+  \item{a - atakujący}
+  \item{b - broniący}
+  \item{m - stała moc umiejętności}
+\end{itemize}
+Jedyna niewykorzystywana nigdzie statystyka to Luck, z uwagi na brak planowanej wcześniej implementacji ciosów krytycznych w systemie walki.
+
+
+\section{Część aplikacji automatycznie trenująca model}
+Ta część aplikacji służy do uczenia modelu, jak poruszać się po systemie Press Turn. Składa się z 1 sceny Unity: TrainingScene.
+
+
+\subsection{Implementacja ML-Agents}
+
+
+\subsection{UI}
+
+
+\chapter{Instrukcja instalacji i korzystania}
 
 
 \chapter{Wnioski}
@@ -219,7 +385,7 @@ Do implementacji został wybrany klasyczny wariant systemu Press Turn. Mimo swoj
 
   \bibitem{SMT3}
   Atlus,
-  \textit{Shin Megami Tensei III}
+  \textit{Shin Megami Tensei III},
   (2003 r.)
 \end{thebibliography}
 
