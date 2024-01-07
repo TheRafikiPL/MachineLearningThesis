@@ -17,6 +17,7 @@
 \usepackage{hyperref}
 \usepackage{subfigure}
 \usepackage{float}
+\usepackage{listings}
 
 \begin{document}
 \maketitle
@@ -340,13 +341,18 @@ Ilość postaci po stronie gracza jak i statystyki, umiejętności oraz relacje 
 \end{itemize}
 
 \subsubsection{Agent}
-Implementacja oparta o artykuł~\cite{MLAgentsStartegyGuide}. Aby zaimplementować Agenta za pomocą pakietu ML-Agents należało stworzyć nową klasę dziedziczącą po klasie Agent. Klasa Agent wymaga do działania przeciążenia niektórych swoich metod.
-Lista przeciążonych metod wraz z opisem nowej funkcjonalności:
+Implementacja oparta o artykuł~\cite{MLAgentsStartegyGuide}. Aby zaimplementować Agenta za pomocą pakietu ML-Agents należało stworzyć nową klasę dziedziczącą po klasie Agent oraz określenie jakie wartości będzie on przewidywał. 
+W przypadku tej pracy, Agent będzie przewidywał 2 wartości: 
+\begin{itemize}
+  \item{Indeks wybranej umiejętności}
+  \item{Indeks wybranego aktora}
+\end{itemize}
+Klasa Agent wymaga do działania przeciążenia niektórych swoich metod. Lista przeciążonych metod wraz z opisem nowej funkcjonalności:
 \begin{itemize}
   \item{void Heurestic() - z metody została usunięta cała funkcjonalność, przez fakt powodowania niepotrzebnych ostrzeżeń w konsoli Unity. Funkcja pozostaje pusta ze względu na nie używanie jej w projekcie.}
   \item{void CollectObservations() - metoda zajmuje się zebraniem danych ze środowiska oraz wysłanie ich do analizy(spis wszystkich zmiennych branych pod uwagę podczas uczenia został opisany niżej)}
   \item{void OnActionReceived() - metoda odczytuje wybrane przez Agenta wartości i przekazuje je do środowiska}
-  \item{void WriteDiscreteMask() - metoda powoduje zablokowanie wartości tak, aby sztuczna inteligencja nie mogła ich wybrać podczas predykcji. Tymi wartościami są umiejętności, których sztuczna inteligencja nie posiada lub nie ma wystarczających zasobów aby ich użyć, oraz martwi lub nie istniejący członkowie drużyny gracza.}
+  \item{void WriteDiscreteMask() - metoda tworzy maskę uniemożliwiającą wybranie przez sztuczną inteligencję umiejętności, do których nie ma dostępu oraz postaci nie żyjących lub nie istniejących}
   \item{void OnEpisodeBegin() - metoda przywraca stan początkowy środowiska w którym się znajduje}
 \end{itemize}
 Aby ML-Agents mogło działać poprawnie w systemie turowym, trzeba było dodatkowo wyłączyć Automatyczne Kroki Środowiskowe poprzez funkcję Awake() Agenta. Do ciała funkcji należało wpisać: \verb|Academy.Instance.AutomaticSteppingEnabled = false;|
@@ -379,6 +385,7 @@ Nowy algorytm pętli gry wygląda następująco:
 \end{enumerate}
 
 \subsubsection{Zmienne wybrane do uczenia}
+\label{zmienne}
 Zmiennych uczących jest łączne 87. W ich skład wchodzą:
 \begin{enumerate}
   \item{Ilość zwykłych tur}
@@ -398,8 +405,86 @@ W przypadku gdy aktor nie został stworzony w danym epizodzie, wszystkie 17 przy
   \includegraphics[height=7cm]{trainingui.JPG}
   \caption{Widok UI do nadzoru trenowania modelu}
 \end{figure}
+Widok składa się z 2 elementów:
+\begin{enumerate}
+  \item{Listy środowisk}
+  \item{Panelu szczgółowego}
+\end{enumerate}
+Elementy te są ze sobą głęboko powiązane. Po naciśnięciu przycisku w liście środowisk, panel szczegółowy zmienia pokazywane dane na te z wybranego środowiska.
+Panel szczegółowy pokazuje wszystkie zmienne w nieznormalizowanej postaci. Są one ustawione w taki sam sposób jak to opisuje lista w sekcji \nameref{zmienne}.
+Ponadto wyświetlane są ostatnio wybrane wartości przez sztuczną inteligencję w postaci indeksów poszczególnych danych. Dostępny jest również przycisk restartu
+środowiska Reset Env, przywracający je do stanu początkowego.
 
 \chapter{Instrukcja instalacji i korzystania}
+\section{Instalacja}
+\subsection{Wymagane programy}
+Aby aplikacja była poprawnie uruchamiana potrzebne są określone komponenty. W przypadku wersji nowszych/starszych od podanych nie ma gwarancji prawidłowego działania aplikacji.
+Lista potrzebnych komponentów:
+\begin{itemize}
+  \item{Unity Hub - używany do instalacji silnika Unity}
+  \item{Unity wersja 2022.2.11f1 - program Unity Hub sam zapyta o zainstalowanie tej wersji silnika podczas pierwszej próby uruchomienia projektu}
+  \item{Python v3.9.13}
+  \item{(opcjonalnie) Visual Studio 2022 lub Visual Studio Code - do edycji kodu źródłowego aplikacji}
+\end{itemize}
+
+\subsection{Konfiguracja wirtualnego środowiska Pythona}
+Wirtualne środowisko umożliwia instalacje pakietów bezpośrednio w folderze z projektem, dzięki czemu może on zostać zabrany na przenośny dysk i uruchomiony na każdym komputerze posiadającym wymienione wczesniej komponenty.
+Poniższa instrukcja jest napisana z myślą o systemie operacyjnym Windows, gdyż na tym systemie aplikacja była tworzona i testowana.
+Aby skonfigurować wirtualne środowisko, należy:
+\begin{enumerate}
+  \item{Uruchomić Wiersz Poleceń (cmd) w folderze bazowym projektu}
+  \item{Sprawdzić za pomocą wiersza poleceń swoją wersję Pythona za pomocą polecenia:
+  \begin{lstlisting}
+  python
+  \end{lstlisting}
+  jeśli jest poprawnie zainstalowany, zostanie otworzony program Python CLI pokazujący zainstalowaną wersję Pythona. Aby z niego wyjść należy użyć komendy:
+  \begin{lstlisting}[language=Python]
+  exit()
+  \end{lstlisting}
+  }
+  \item{Utworzyć wirtualne środowisko za pomocą komendy:
+  \begin{lstlisting}
+  python -m venv venv
+  \end{lstlisting}
+  }
+  \item{Aktywować wirtualne środowisko w wierszu poleceń za pomocą polecenia:
+  \begin{lstlisting}
+  venv\Scripts\activate
+  \end{lstlisting}
+  }
+  \item{Zainstalować narzędzie pip do wirtualnego środowiska odpowiadające za pobieranie pakietów Pythona wpisując:
+  \begin{lstlisting}
+  python -m pip install --upgrade pip
+  \end{lstlisting}
+  }
+  \item{Za pomocą narzędzia pip pobrać pakiet ML-Agents wpisując:
+  \begin{lstlisting}
+  pip install mlagents
+  \end{lstlisting}
+  }
+  \item{Zainstalować pakiety wchodzące w skład biblioteki PyTorch wpisująć:
+  \begin{lstlisting}
+  pip install torch torchvision torchaudio
+  \end{lstlisting}
+  }
+  \item{Zmienić wersję pakietu protobuf, gdyż ta instalowana razem z ML-Agents nie działa poprawnie za pomocą komendy:
+  \begin{lstlisting}
+  pip install protobuf==3.20.3
+  \end{lstlisting}
+  }
+  \item{Pobrać pakiet ONNX odpowiadający za tworzenie plików przechowywujących modele wpisująć polecenie:
+  \begin{lstlisting}
+  pip install onnx
+  \end{lstlisting}
+  }
+  \item{Sprawdzić, czy ML-Agents zostało poprawnie zainstalowane za pomocą komendy:
+  \begin{lstlisting}
+  mlagents-learn -h
+  \end{lstlisting}
+  }
+\end{enumerate}
+
+\section{Korzystanie z aplikacji}
 
 
 \chapter{Wnioski}
