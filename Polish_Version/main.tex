@@ -122,7 +122,7 @@ Systemów walki turowej w grach RPG jest bardzo dużo, ale wszystkie charakteryz
   \item{Walka kończy się gdy wszystkie postacie gracza lub wszyscy przeciwnicy umrą}
 \end{itemize}
 Poniżej przedstawię parę podejść do turowego systemu walki wraz z przykładową grą w której został taki system walki użyty:
-\subsection{Standart Turn Battle}
+\subsection{Standard Turn Battle}
 Najbardziej podstawowy, najpowszechniejszy i zarazem najprostszy system walki turowej. Na początku walki jest tworzona kolejka tur złożona ze wszystkich postaci na scenie na podstawie statystyki Szybkości.
 Gdy postać wykorzysta swoją turę jest przenoszona na koniec kolejki i następna postać w kolejce dostaje możliwość wykorzystania tury. Posiada on 2 główne warianty:
 \begin{enumerate}
@@ -330,6 +330,7 @@ Aby zacząć uczyć model w technice uczenia przez wzmacnianie potrzebne są śr
 Środowiskiem jest stworzony wcześniej system Press Turn z którego zostały usunięte niepotrzebne funkcje związane z UI. W rolę gracza wcieli się generator liczb losowych. Będzie on wybierał losową, dostępną umiejętność.
 Ilość postaci po stronie gracza jak i statystyki, umiejętności oraz relacje z Elementami będą losowane dla wszystkich postaci. Aby umożliwić powyższe zmieny, dodane zostały następujące elementy do środowiska:
 \begin{itemize}
+  \label{randomvals}
   \item{turns - ilość minionych tur}
   \item{maxTurns - maksymalna ilość tur po której środowisko powróci do stanu początkowego}
   \item{pointsMin - minimalna wartość wykorzystywana do losowania HP oraz MP postaci. Może przyjąć wartość z zakresu <1,pointsMax)}
@@ -485,7 +486,39 @@ Aby skonfigurować wirtualne środowisko, należy:
 \end{enumerate}
 
 \section{Korzystanie z aplikacji}
-
+\subsection{Uruchomienie trenowania modelu}
+Pierwszym etapem jaki trzeba wykonać jest wytrenowanie modelu. Aby to zrobić trzeba wykonać nastepujące kroki:
+\begin{enumerate}
+  \item{Uruchomić projekt poprzez Unity Hub}
+  \item{Otworzyć scenę TrainingScene znajdującą się w folderze Assets/Scenes}
+  \item{Na panelu Hierarchy należy wyszukać obiekt Environments. Służy on do przechowywania Środowisk uczących model}
+  \item{Zklonować obiekt Environment będący dzieckiem obiektu Environments tyle razy, ile ma być środowisk uczących}
+  \item{Skonfigurować Środowiska. Obiekt TrainingManager służy do konfiguracji losowych statystyk postaci w środowisku, a MLAgentsTrainer ustawia wartości nagród za akcje}
+  \item{Uruchomić wiersz poleceń w folderze z projektem następnie aktywując wirtualne środowisko}
+  \item{Uruchomić ML-Agents za pomocą komendy:
+  \begin{lstlisting}
+  mlagents-learn
+  \end{lstlisting}
+  Natomiast, jeśli już wcześniej model był uczony możemy zmusić ML-Agents do ponownego uczenia wpisując:
+  \begin{lstlisting}
+  mlagents-learn --force
+  \end{lstlisting}}
+  \item{Gdy ML-Agents wyświetli komunikat w którym czeka na Unity, należy uruchomić scenę TrainingScene w Unity za pomocą funkcji playtest}
+  \item{Gdy będziemy uważać, że model jest dostatecznie wytrenowany, należy wpierw opuścić playtest, a następnie w zatrzymać uczenie w wierszu poleceń za pomocą skrótu CTRL+C.
+  Po zatrzymaniu, ml-agents wyświetli nazwę oraz ścieżkę do pliku z rozszerzeniem .onnx w której model został zapisany}
+\end{enumerate}
+Wszystkie pliki wynikowe ML-Agents znajdują się w folderze results/ppo/. Jest możliwość uruchomienia aplikacji Tensorboard aby obserwować przebieg uczenia, lecz z uwagi na to, 
+że pakiety wykorzystywane przez ML-Agents są przestarzałe, nie są kompatybilne z pakietami wymaganymi przez pakiet Tensorflow (potrzebny do działania aplikacji Tensorboard) wykorzystujący te same pakiety ale w nowszej wersji.
+Po próbach instalacji starszych wersji pakietów, nie udało się uzyskać działającej aplikacji Tensorboard, przez co finalnie nie jest dostępna w implementacji.
+\subsection{Uruchomienie symulacji}
+Po wytrenowaniu modelu, trzeba go przypisać do sztucznej inteligencji na scenie z symulacją. Aby to zrobić należy wykonać następujące kroki:
+\begin{enumerate}
+  \item{Skopiować plik z modelem o ścieżce podanej po zakończeniu uczenia do folderu Brains znajdującego się w katalogu [Ścieżka Projektu]/Assets/Data/}
+  \item{Otworzyć scenę BattleScene znajdującą się w folderze Scenes}
+  \item{Do obiektu MlAgentsAI należy przypisać wytrenowany model. Robi się to przeciągając z widoku folderów projektu plik o rozszerzeniu .onnx do właściwości Model obiektu MlAgentsAI}
+  \item{Otworzyć scenę MainMenu i uruchomić symulację}
+\end{enumerate}
+Po tych krokach można dostosować statystyki postaci gracza oraz przeciwnika i zasymulować walkę na danym modelu.
 
 \chapter{Wnioski}
 
