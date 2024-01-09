@@ -24,15 +24,15 @@
 \statementpage
 \abstractpage
 {Zastosowanie metod uczenia maszynowego do stworzenia sztucznej inteligencji w turowych grach RPG}
-{Tematem pracy było implementowanie sztucznej inteligencji uczącej się za pomocą metod uczenia maszynowego w turowej grze RPG. Praca składa się z czterech głównych części.
+{Tematem pracy było zaimplementowanie sztucznej inteligencji uczącej się za pomocą metod uczenia maszynowego w turowej grze RPG. Praca składa się z czterech głównych części.
 Pierwsza część omawia technologie wykorzystane w pracy oraz ich alternatywy. Druga część skupia się na implementacji wcześniej wspomnianych technologii.
-Trzecia część zawiera instrukcję użytkowania gotowej aplikacji. W czwartej części znajdują się wnioski dotyczące implementacji tematycznego rozwiązania w szerszym kontekście.}
+Trzecia część zawiera instrukcję użytkowania gotowej aplikacji. W czwartej części znajdują się wnioski dotyczące implementacji tematycznego rozwiązania w produktach komercyjnych.}
 {uczenie maszynowe, sztuczna inteligencja, gry RPG, uczenie przez wzmacnianie, turowe systemy walki}
 {The use of machine learning methods to create artificial intelligence in turn-based RPG games}
 {The topic of the paper was the implementation of artificial intelligence, which learns through machine learning methods, in a turn-based RPG game. 
 The paper consists of four main parts. The first part discusses the technologies used in the work and their alternatives. The second part focuses on 
 the implementation of the aforementioned technologies. The third part contains user instructions for the finished application. The fourth part includes 
-conclusions regarding the implementation of the thematic solution in a broader context.}
+conclusions regarding the implementation of the thematic solution in commercial products.}
 {machine learning, artificial intelligence, RPG games, reinforcement learning, turn-based battle system}
 
 
@@ -58,7 +58,7 @@ Praca ma na celu zbadanie możliwości implementacji sztucznej inteligencji dla 
 - gry w których gracz wciela się w rolę postaci występujących w fikcyjnym świecie. Gracze ponoszą wszelkie konsekwencje swoich akcji jako postać w świecie gry.}
 z turowym systemem walki. Wynikowo otrzymamy 2 aplikacje: trenującą model oraz testującą model w postaci symulatora walki. Treść pracy będą stanowić opisy technologii
 użytych w pracy wraz z alternatywami, opis implementacji rozwiązania na podstawie wybranych wcześniej technologii, instrukcję obsługi napisanej aplikacji oraz
-wnioski na temat implementacji takiego rozwiązania w szerszym zakresie.
+wnioski na temat implementacji takiego rozwiązania w grach komercyjnych na podstawie tego projektu.
 
 
 \chapter{Technologie}
@@ -348,7 +348,7 @@ W przypadku tej pracy, Agent będzie przewidywał 2 wartości:
   \item{Indeks wybranej umiejętności}
   \item{Indeks wybranego aktora}
 \end{itemize}
-Klasa Agent wymaga do działania przeciążenia niektórych swoich metod. Lista przeciążonych metod wraz z opisem nowej funkcjonalności:
+Klasa Agent wymaga do działania nadpisania niektórych swoich metod. Lista przeciążonych metod wraz z opisem nowej funkcjonalności:
 \begin{itemize}
   \item{void Heurestic() - z metody została usunięta cała funkcjonalność, przez fakt powodowania niepotrzebnych ostrzeżeń w konsoli Unity. Funkcja pozostaje pusta ze względu na nie używanie jej w projekcie.}
   \item{void CollectObservations() - metoda zajmuje się zebraniem danych ze środowiska oraz wysłanie ich do analizy(spis wszystkich zmiennych branych pod uwagę podczas uczenia został opisany niżej)}
@@ -356,6 +356,18 @@ Klasa Agent wymaga do działania przeciążenia niektórych swoich metod. Lista 
   \item{void WriteDiscreteMask() - metoda tworzy maskę uniemożliwiającą wybranie przez sztuczną inteligencję umiejętności, do których nie ma dostępu oraz postaci nie żyjących lub nie istniejących}
   \item{void OnEpisodeBegin() - metoda przywraca stan początkowy środowiska w którym się znajduje}
 \end{itemize}
+\begin{figure}[H]
+  \hfill
+  \subfigure[Funkcja Heurestic() oraz CollectObservations()]{\includegraphics[width=0.45\textwidth]{Heurestic_Collect.JPG}}
+  \hfill
+  \subfigure[Funkcja OnActionReceived()]{\includegraphics[width=0.45\textwidth]{OnActionReceived.JPG}}
+  \hfill
+  \subfigure[Funkcja WriteDiscreteMask()]{\includegraphics[width=0.45\textwidth]{Mask.JPG}}
+  \hfill
+  \subfigure[Funkcja OnEpisodeBegin()]{\includegraphics[width=0.45\textwidth]{Episode.JPG}}
+  \hfill
+  \caption{Zrzuty ekranu prezentujące ciała nadpisanych funkcji}
+\end{figure}
 Aby ML-Agents mogło działać poprawnie w systemie turowym, trzeba było dodatkowo wyłączyć Automatyczne Kroki Środowiskowe poprzez funkcję Awake() Agenta. Do ciała funkcji należało wpisać: \verb|Academy.Instance.AutomaticSteppingEnabled = false;|
 Powoduje to również konieczność zaimplementowania manualnego wykonywania kroku środowiskowego za pomocą: \verb|Academy.Instance.EnvironmentStep();|
 Dodatkowo do klasy zostały zaimplementowane dodatkowe metody oraz właściwości pomocnicze opisane w~\cite{MLAgentsStartegyGuide}. Są to:
@@ -520,7 +532,16 @@ Po wytrenowaniu modelu, trzeba go przypisać do sztucznej inteligencji na scenie
 \end{enumerate}
 Po tych krokach można dostosować statystyki postaci gracza oraz przeciwnika i zasymulować walkę na danym modelu.
 
+\subsection{Sposób oceny modelu}
+Z uwagi na wcześniej wspomniany brak możliwości implementacji aplikacji Tensorboard, nie da się dokładnie sprawdzić jakości modelu. Można jednak sprawdzić czy model dokonuje poprawnych decyzji podczas różnych prób symulacji.
+W moim przypadku oceniałem czy model po zobaczeniu słabości na jakiś konkretny żywioł np. Ogień, posiadając też inne dostępne umiejętności będzie bardziej skłonny do atakowania tym typem obrażeń. 
+
 \chapter{Wnioski}
+W mojej ocenie, oparcie sztucznej inteligencji w grach na przetrenowanych modelach jest w obecnych czasach możliwe. Problemem jest dodatkowe dotrenowanie lub całkowite trenowanie od podstaw modelu podczas trwania gry.
+ML-Agents wymaga uruchomionego środowiska Unity, które jest edytorem gry, aby móc trenować model co wyklucza taką możliwość. Jednak technologie uczenia maszynowego rozwijają się bardzo prężnie i jak jeszcze w roku 2020 technologie
+uczenia maszynowego były domeną naukową, bardzo mało znaną poza tym kręgiem, to aktualnie są bardzo ważną i dynamicznie rozwijaną dziedziną. Może to spowodować na tyle duży rozwój tej technologii, że uczenie sztucznej inteligencji
+podczas gry będzie możliwe.
+
 
 \begin{thebibliography}{9}
   \bibitem{MachineLearningTypes}
