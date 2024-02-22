@@ -13,11 +13,14 @@
 \promotor{dra Marka Karwańskiego}
 \pworkplace{Instytut Informatyki Technicznej\\Katedra Zastosowań Matematyki}
 
+\renewcommand{\thefigure}{\arabic{figure}}
 \usepackage[bottom]{footmisc}
 \usepackage{hyperref}
 \usepackage{subfigure}
 \usepackage{float}
 \usepackage{listings}
+\usepackage{cite}
+\raggedbottom
 
 \begin{document}
 \maketitle
@@ -46,23 +49,23 @@ conclusions regarding the implementation of the thematic solution in commercial 
 \startchapterfromoddpage % niezależnie od długości spisu treści pierwszy rozdział zacznie się na nieparzystej stronie
 
 \chapter{Wstęp}
-Sztuczna Inteligencja w przeciągu ostatnich lat objęła wiele dziedzin życia i jest ciągle dynamicznie rozwijana. Jej zastosowanie jest bardzo 
-rozległe, a jedną z branż o dużych perspektywach rozwoju tej technologii jest przemysł rozrywkowy w który wchodzą gry wideo. W grach można zastosować 
-tą technologię do chociażby generowania misji i zadań dla graczy aby nie były one powtarzalne, stworzenia mądrego systemu automatycznej walki dzięki
-któremu gracz nie lubiący tego elementu w grze może go pominąć, czy też do stworzenia sztucznej inteligencji dla przeciwników gracza. Ostatnie z tych 
-przykładowych zastosowań zostanie zgodnie z tematem pracy omówione pod względem teoretycznym i praktycznym.
-
+Sztuczna inteligencja w ciągu ostatnich lat objęła wiele dziedzin życia i ciągle dynamicznie się rozwija. 
+Jej zastosowanie jest bardzo rozległe, a jedną z branż o dużych perspektywach rozwoju tej technologii jest przemysł rozrywkowy, 
+w który wchodzą gry wideo. W grach można zastosować tę technologię do generowania misji i zadań dla graczy, aby nie były one powtarzalne, 
+stworzenia mądrego systemu automatycznej walki, dzięki któremu gracz nie lubiący tego elementu w grze może go pominąć, oraz do stworzenia 
+sztucznej inteligencji dla przeciwników gracza. Ostatnie z tych przykładowych zastosowań zostanie omówione pod względem teoretycznym i praktycznym 
+zgodnie z tematem pracy.
 
 \section{Cel i zakres pracy}
-Praca ma na celu zbadanie możliwości implementacji sztucznej inteligencji dla przeciwnków w grach wideo z gatunku RPG\footnote{RPG (ang. Role Playing Games) 
-- gry w których gracz wciela się w rolę postaci występujących w fikcyjnym świecie. Gracze ponoszą wszelkie konsekwencje swoich akcji jako postać w świecie gry.}
-z turowym systemem walki. Wynikowo otrzymamy 2 aplikacje: trenującą model oraz testującą model w postaci symulatora walki. Treść pracy będą stanowić opisy technologii
-użytych w pracy wraz z alternatywami, opis implementacji rozwiązania na podstawie wybranych wcześniej technologii, instrukcję obsługi napisanej aplikacji oraz
-wnioski na temat implementacji takiego rozwiązania w grach komercyjnych na podstawie tego projektu.
-
+Praca ma na celu zbadanie możliwości implementacji sztucznej inteligencji dla przeciwników w grach wideo z gatunku RPG\footnote{RPG (ang. Role Playing Games)
+- gry, w których gracz wciela się w rolę postaci występujących w fikcyjnym świecie. Gracze ponoszą wszelkie konsekwencje swoich akcji jako postać w świecie gry.}
+z turowym systemem walki. Wynikiem pracy będą dwie aplikacje: jedna trenująca model, a druga testująca model w postaci symulatora walki. 
+Treść pracy będzie stanowić opisy technologii użytych w pracy wraz z alternatywami, opis implementacji rozwiązania na podstawie wybranych 
+wcześniej technologii, instrukcję obsługi napisanej aplikacji oraz wnioski na temat implementacji takiego rozwiązania w grach komercyjnych na 
+podstawie tego projektu.
 
 \chapter{Technologie}
-W tym rozdziale zostaną szczegółowo omówione komponenty potrzebne do implementacji takowej sztucznej inteligencji. Według kolejności wyboru są to: 
+W tym rozdziale zostaną szczegółowo omówione komponenty potrzebne do implementacji takiej sztucznej inteligencji. Według kolejności wyboru są to: 
 \begin{itemize}
   \item{Rodzaj uczenia maszynowego}
   \item{Silnik do stworzenia gry oraz pakiet do uczenia maszynowego kompatybilny z silnikiem}
@@ -72,30 +75,31 @@ W tym rozdziale zostaną szczegółowo omówione komponenty potrzebne do impleme
 
 
 \section{Rodzaje uczenia maszynowego}
-W uczeniu maszynowym można rozgraniczyć 3 jego główne rodzaje (w oparciu o drugi rozdział z~\cite{MachineLearningTypes}):
+W uczeniu maszynowym można rozróżnić trzy jego główne rodzaje (w oparciu o drugi rozdział z~\cite{MachineLearningTypes}):
 \begin{itemize}
   \item{Nadzorowane (ang. Supervised) - model jest trenowany na danych wejściowych oraz odpowiednich dla nich wartości wynikowych. Na ich podstawie uczy się przewidywania wyniku dla nowych, nieznanych danych wejściowych.}
   \item{Nienadzorowane (ang. Unsupervised) - model jest trenowany na samych danych wejściowych nie dostając oczekiwanych wyników. Model sam musi odkryć sens jaki stoi za danymi wejściowymi.}
   \item{Przez wzmacnianie (ang. Reinforcement) - model trenowany za pomocą interakcji trenowanego agenta z wykreowanym otoczeniem. Agent wykonując akcje w otoczeniu dostaje nagrody lub kary w zależności od wyników jego akcji.}
 \end{itemize}
-W przypadku tej pracy użyty zostanie rodzaj uczenia przez wzmacnianie przez charakterystyczną dla niego metodę uczenia przez interakcje. Metoda ta pasuje do gier wideo, gdyż z założenia polegają one na interakcji gracza ze światem gry.
-Model będzie mógł, tak samo jak gracz grający w grę, poprzez ingerowanie za pomocą akcji w otoczenie uczyć się wykonywania najlepszych możliwych akcji w danym momencie. Wiecej wiedzy o tym jak działa uczenie przez wzmacnianie jest zawarte w~\cite{ReinforcementLearning}.
-
+W przypadku tej pracy zostanie użyty rodzaj uczenia przez wzmacnianie, z uwagi na charakterystyczną dla niego metodę uczenia przez interakcje. 
+Metoda ta pasuje do gier wideo, gdyż z założenia polegają one na interakcji gracza ze światem gry. Model będzie mógł, tak jak gracz grający w grę, 
+poprzez ingerencję za pomocą akcji w otoczenie, uczyć się wykonywania najlepszych możliwych akcji w danym momencie. Więcej informacji na temat 
+działania uczenia przez wzmacnianie zawarto w~\cite{ReinforcementLearning}.
 
 \section{Silniki graficzne oraz pakiety do uczenia}
-Wybór silnika graficznego oraz pakietu do uczenia maszynowego jest ze sobą głęboko powiązany. Ponadto jest on mocno subiektywny, gdyż jest uzależniony od umiejętności autora projektu. Lista popularnych wyborów w zakresie silnika i pakietu do uczenia maszynowego:
+Wybór silnika graficznego oraz pakietu do uczenia maszynowego jest głęboko powiązany. Ponadto jest to kwestia mocno subiektywna, gdyż zależy od umiejętności autora projektu. Oto lista niektórych wyborów w zakresie silnika i pakietu do uczenia maszynowego:
 \subsection{Unity z pakietem ML-Agents}
 Wśród wymienionych gotowych pakietów, ML-Agents jest najstarszym rozwiązaniem (udostępnione w 2017r.\footnote{Repozytorium powstało 8.09.2017r, pierwsza wersja pakietu pochodzi z 16.09.2017r - link do repozytorium \url{https://github.com/Unity-Technologies/ml-agents}}).
 Dostępne w pakiecie są 2 algorytmy uczenia przez wzmacnianie - PPO oraz SAC\footnote{Więcej informacji o tych algorytmach w rozdziale "\nameref{algorithms}"}. Pakiet posiada własną dokumentację\cite{MLAgentsDocs}. 
 Sam silnik Unity umożliwia tworzenie aplikacji z grafiką 2D oraz 3D, operuje na łatwym w nauce języku C\# oraz ma rozbudowaną dokumentację\cite{UnityDocs}.
 \subsection{Godot z pakietem RL Agents}
-Godot jest silnikiem OpenSource o coraz mocniejszej pozycji na rynku. Według dokumentacji\cite{GodotDocs}
-silnik wspiera oficjalnie 2 języki programowania: autorski język GDScript oraz C\#. Twórcy za pośrednictwem technologii GDExtension dodali możliwość dodania wsparcia dla innych języków przez społeczność.
+Godot jest silnikiem OpenSource o coraz mocniejszej pozycji na rynku. Według dokumentacji \cite{GodotDocs},
+silnik wspiera oficjalnie 2 języki programowania: autorski język GDScript oraz C\#. Twórcy za pośrednictwem technologii GDExtension zapewnili możliwość dodania wsparcia dla innych języków przez społeczność.
 Dzięki temu, można na tym silniku programować również w innych językach programowania takimi jak Rust, C++ czy Swift. Pakiet RL Agents jest najbardziej rozbudowanym pakietem wśród wymienionych.
 Bazuje na 4 innych pakietach\footnote{Pakiety na których bazuje RL Agents - StableBaseLines3, SampleFactory, CleanRL oraz Ray rllib (stan na 06.01.2024r.)} do uczenia przez wzmacnianie
 oraz wspiera ponad 12 algorytmów uczenia. Więcej informacji o RL Agents można znaleźć w artykule naukowym poświęconym tej technologii~\cite{GodotRLAgentsArticle} oraz w dokumentacji dostępnej w repozytorium projektu~\cite{GodotRLAgentsDocs}.
 \subsection{Unreal Engine z pakietem Learning Agents}
-Pod względen innych pakietów Learning Agents jest najmłodszy (powstał na początku 2023r.) oraz najsłabiej udokumentowany. Pakiet operuje algorytmami PPO oraz BC (ang. Behavioral Cloning) \footnote{Informacja pochodzi ze źródła (stan na 06.01.2024r.): \url{https://dev.epicgames.com/community/learning/tutorials/8OWY/unreal-engine-learning-agents-introduction}}. 
+W porównaniu do innych pakietów, Learning Agents jest najmłodszy (powstał na początku 2023r.) oraz najsłabiej udokumentowany. Pakiet operuje algorytmami PPO oraz BC (ang. Behavioral Cloning)\footnote{Informacja pochodzi ze źródła (stan na 06.01.2024r.): \url{https://dev.epicgames.com/community/learning/tutorials/8OWY/unreal-engine-learning-agents-introduction}}. 
 Mimo to sam silnik Unreal Engine jest potężnym narzędziem z bardzo dużym wsparciem i możliwościami. Posiada wsparcie dla języka C++ oraz funkcji Blueprints umożliwiającej programowanie wizualne (bez pisania kodu). 
 Dokumentacja zarówno silnika Unreal Engine jak i pakietu Learning Agents znajduje się w~\cite{UnrealDocs}.
 \subsection{Własny silnik z wykorzystaniem różnych pakietów do uczenia maszynowego}
@@ -110,10 +114,13 @@ Do pracy wybrałem Unity z pakietem ML-Agents przez moje wcześniejsze doświadc
 \label{algorithms}
 Unity ML-Agents posiada 2 algorytmy uczące PPO (ang. Proximal Policy Optimization) oraz SAC (ang. Soft Actor-Critic). Pierwszy z nich jest podstawowym algorytmem używanym w pakiecie. Według \cite{MLAgentsDocs} algorytm PPO jest algorytmem ogólnego przeznaczenia i jest bardziej stabilny w porównaniu z innymi algorytmami uczenia przez wzmacnianie.
 To samo źródło opisuje również różnicę między algorytmem SAC i PPO. SAC jest algorytmem "off-policy" kiedy PPO jest algorytmem "on-policy". Oznacza to że SAC uczy się z doświadczeń zebranych w dowolnym momencie w przeszłości, a podczas uczenia są losowo dobierane do treningu, gdzie w PPO występuje "policy",
-które reguluje podejmowanie decyzji i jest ulepszane z każdą iteracją uczenia. Dodatkowe informacje o algorytmie PPO znajdują się w~\cite{PPOArticle}, a o SAC w~\cite{SACArticle}. Do projektu wybrany został algorytm PPO z uwagi na wcześniej podaną stabilność oraz fakt, że jest on algorytmem będącym ponad 6 lat w pakiecie ML-Agents co sugeruje, że jest on lepiej rozwiniętym rozwiązaniem w pakiecie.
+które reguluje podejmowanie decyzji i jest ulepszane z każdą iteracją uczenia. Dodatkowe informacje o algorytmie PPO znajdują się w~\cite{PPOArticle}, a o SAC w~\cite{SACArticle}. 
+
+\pagebreak
+Do projektu wybrany został algorytm PPO z uwagi na wcześniej podaną stabilność oraz fakt, że jest on algorytmem będącym ponad 6 lat w pakiecie ML-Agents co sugeruje, że jest on lepiej rozwiniętym rozwiązaniem w pakiecie.
 
 \section{Systemy walki w turowych grach RPG}
-Systemów walki turowej w grach RPG jest bardzo dużo, ale wszystkie charakteryzują się paroma wspólnymi cechami:
+Systemów walki turowej w grach RPG jest bardzo dużo i każda gra, nawet opierając się o jakiś system, przerabia go tak aby stał się wyjątkowy. Pewne elementy jednak się nie zmieniają i można je zauważyć w każdej grze z tego gatunku:
 \begin{itemize}
   \item{Rozgrywka polega na wymianie tur postaci gracza z przeciwnikami}
   \item{Podczas tury gracz oraz przeciwnicy wykorzystują swoje tury jako zasób do wykonywania akcji}
@@ -121,25 +128,33 @@ Systemów walki turowej w grach RPG jest bardzo dużo, ale wszystkie charakteryz
   \item{Postacie gracza oraz przeciwnicy posiadają umiejętności, których mogą używać zużywając tury do wykonywania akcji w środowisku gry}
   \item{Walka kończy się gdy wszystkie postacie gracza lub wszyscy przeciwnicy umrą}
 \end{itemize}
-Poniżej przedstawię parę podejść do turowego systemu walki wraz z przykładową grą w której został taki system walki użyty:
-\subsection{Standard Turn Battle}
-Najbardziej podstawowy, najpowszechniejszy i zarazem najprostszy system walki turowej. Na początku walki jest tworzona kolejka tur złożona ze wszystkich postaci na scenie na podstawie statystyki Szybkości.
-Gdy postać wykorzysta swoją turę jest przenoszona na koniec kolejki i następna postać w kolejce dostaje możliwość wykorzystania tury. Posiada on 2 główne warianty:
+Powyższe punkty zostały oparte o własne doświadczenia z grami tego gatunku, jak i o wybrane rozdziały z~\cite{RLLearningInTBRPG, PlayerPreferencesInRPGs}. Poniżej przedstawię parę róźnych podejść do walki w systemie turowym:
+\subsection{RPG Maker}
+RPG Maker to program Low-Code/No-Code do tworzenia gier RPG. System walki w nim użyty jest dobrą bazą do tworzenia innych, 
+bardziej skomplikowanych systemów przez swoją prostotę. Na początku walki jest tworzona kolejka złożona z postaci występujących na scenie 
+(zarówno wrogich jak i sojuszniczych), która jest posortowana według statystyki Szybkości. Im większa owa statystyka, tym postać jest wyżej w 
+kolejce i szybciej wykona ruch. Po stworzeniu kolejki, gracz wybiera ruchy wszystkich sojuszniczych postaci, a po wyborze ruchu ostatniej postaci
+system przechodzi przez kolejkę postaci uruchamiając wybrane przez gracza oraz sztuczną inteligencję przeciwników akcje. Po wszystkim, 
+system daje graczowi ponowną możliwość wyboru umiejętności. System ten był również zaimplementowany w grach z serii Etrian Oddysey oraz 
+pierwszych częściach Final Fantasy.
+\subsection{Darkest Dungeon}
+System walki w tej grze jest zmodyfikowaną wersją poprzedniego systemu, jednak wprowadza większą dynamikę. 
+Gdy kolejka postaci zostanie stworzona oraz postać w drużynie gracza ma aktualnie swoją turę, gracz wybiera akcję, 
+którą postać ma wykonać. Po jej wybraniu, postać wykonuje akcję i przechodzi na koniec kolejki, przekazując turę następnej postaci w 
+niej się znajdującej. System ten został również użyty w grach Yakuza: Like a Dragon, Like a Dragon: Infinite Wealth czy Super Mario RPG.
+\subsection{Active Time Battle}
+System walki charakteryzuje się tym, że każda postać na początku zaczyna z pustym paskiem tury, ładowanym się w równych interwałach. 
+Gdy tura jakiejś postaci zostanie w pełni naładowana, walka zatrzymuje się, a postacie z naładowaną turą wybierają akcję, jaką mają wykonać. 
+Następnie pasek tury jest dalej ładowany. Gdy ładowanie dobiegnie do końca, postać wykona wybraną wcześniej akcję i resetuje ładowanie tury 
+do wartości początkowej. System ten jest znany z gier Chrono Trigger, Child of Light oraz serii Final Fantasy.
+\subsection{Press-Turn System}
+Został stworzony i głównie jest używany w grach firmy Atlus począwszy od gry~\cite{SMT3}. System opiera się na zwiększeniu znaczenia tury jako zasobu poprzez rozdzielenie tur na zwykłe i "wciśnięte", oraz wprowadzenie oceny ruchu postaci.
+Ocena opiera się na 2 powiązanych ze sobą kryteriach:
 \begin{enumerate}
-  \item{Postać posiadająca turę od razu po wybraniu ruchu go wykonuje i kolejka przechodzi do następnej osoby. Jest to system wykorzystywany np. w grach z serii Pokemon, czy też jako podstawowy system walki w kreatorze gier RPG o nazwie RPG Maker MV.}
-  \item{Wszystkie postacie na początku wybierają ruch jakiego będą używać podczas aktualnego przejścia przez kolejkę. Po wybraniu walka trwa jedno całe przejście kolejki, aby po ruchu ostatniej postaci w kolejce znów poprosić o wybranie ruchu. Jest to rozwiązanie znane np. z gier z serii Etrian Odyssey.}
+  \item{Rodzaj obrażeń - np. żywioły typu ogień, woda, ziemia itp.}
+  \item{Relację postaci do użytego rodzaju obrażeń}
 \end{enumerate}
-\subsection{Active Turn Battle}
-System walki charakteryzuje sie tym, że każda postać na początku zaczyna z pustym paskiem tury ładującym się w równych interwałach o wartość zależną od statystyki Szybkości. Im większa owa statystyka, tym szybciej tura jest ładowana.
-Gdy tura jakiejś postaci zostanie w pełni naładowana, walka zatrzymuje się, a postacie z naładowaną turą wybierają akcję jaką mają wykonać. Następnie pasek tury jest ponownie ładowany. Gdy dobiegnie do końca postać wykona wybraną wcześniej akcję i resetuje ładowanie tury do wartości początkowej.
-System ten jest znany z gier z serii Final Fantasy.
-\subsection{Press Turn System}
-Został stworzony i w głównej mierze jest używany w grach firmy Atlus począwszy od gry~\cite{SMT3}. System opiera się o zwiększenie znaczenia tury jako zasobu gdzie na początku gra oddziela fazę ruchu gracza i przeciwnika. Następnie tworzy kolejkę ruchów dla uczestnikow danej fazy na podstawie statystyki Szybkości.
-Następne kroki jakie podejmuje system są zależne od wariantu tego systemu. 
-
-\subsubsection{Wariant klasyczny}
-Występujący w grach z serii Shin Megami Tensei począwszy od \cite{SMT3}. Ilość tur dla strony wykonującej ruchy jest liczona na podstawie ilości postaci po tej stronie. Każda akcja wykonana przez postać jest oceniana przez system i na podstawie oceny zmienia się ilość tur. W przypadku tego modelu musi występować system 
-Elementów, które są przypisane do każdej umiejętności ofensywnej, oraz relacji postaci do Elementu. Elementem mogą być np. żywioły takie jak Ogień, Lód czy Wiatr, natomiast relacjami są skutki Elementu na postać, które potem edytują ilość tur. W grach z tej serii występuje 6 relacji do Elementów:
+Pierwotna implementacja systemu zawiera 6 typów relacji do rodzaju obrażeń:
 \begin{enumerate}
   \item{Normalna}
   \item{Słabość}
@@ -148,19 +163,20 @@ Elementów, które są przypisane do każdej umiejętności ofensywnej, oraz rel
   \item{Odbicie}
   \item{Absorpcja}
 \end{enumerate}
-Jeśli postać trafi w słaby punkt przeciwnika nie traci całej tury, a tura jest "wciskana" (ang. Pressed). To samo dzieje się, gdy postać trafi cios krytyczny. "Wciśnięta" tura zachowuje się jak zwykła tura, ale nie może być wciśnięta ponownie. Tury można "wciskać" trafiając w słaby punkt przeciwnika oraz uderzając ciosami krytycznymi aż do momentu, w którym nie będziemy mieli dostępnych zwykłych tur.
-Jeśli posiadamy zarówno zwykłą turę, jak i "wciśniętą" turę to akcja z normalną relacją do Elementu spowoduje zużycie "wciśniętej" tury. Inne typy relacji zmniejszają ilość tur o określoną ilość np. trafienie w Element z relacją Niewrażliwości może obniżyć ilość tur atakującego o 2 priorytetyzując tury "wciśnięte".
-Jeśli postać postanowi nic nie robić podczas tury, jest ona "wciskana". Gdy stronie wykonującej akcje skończą się tury następuje zmiana stron. W przypadku gdy walka jest z osamotnioną, silniejszą postacią (tzw. Bossem), system daje tej postaci dodatkową turę.
-
-\subsubsection{Wariant uproszczony}
-Występujący w grach z serii Persona począwszy od części trzeciej. W tym przypadku również musi występować system Elementów i relacji opisany jak w wersji klasycznej. Postacie mogą wykonać jedną akcję według kolejki określonej na początku fazy. Jeśli po użyciu umiejętności ofensywnej postać trafi w słaby punkt przeciwnika lub uderzy cios krytyczny,
-nie traci ruchu i może użyć czegoś jeszcze raz, a przeciwnik dostaje status "Powalenia". Jeśli trafi się przeciwnika o tym statusie ciosem krytycznym lub w słaby punkt, nie dostaje się dodatkowego ruchu i rusza się kolejna osoba z drużyny. Status "Powalenia" znika gdy postać ma się ruszyć. W każdym innym przypadku ruch jest tracony i rusza się kolejna osoba. 
-W grze Persona 5 dodano dodatkowo mechanikę Baton Pass, która umożliwia oddanie swojej tury po trafieniu krytycznym lub w słaby punkt innej osobie z drużyny. Jeśli kolejna osoba trafi cios krytyczny lub w słaby punkt może oddać swoją turę kolejnej osobie z drużyny wyłączając każdą osobę która korzystała z tej mechaniki wcześniej. Po wykonaniu akcji nie dającej dodatkowego ruchu, 
-ruch dostaje następna postać.
-
+\pagebreak
+System na początku rozdziela fazę gracza oraz fazę przeciwnika. Na początku każdej fazy liczona jest liczba tur jaką posiada poruszają się strona, która zazwyczaj jest liczbą postaci po danej stronie wykluczając martwe postaci (istnieją wyjątki od tej reguły).
+Poza liczeniem liczby tur jest tworzona kolejka postaci w której kolejności będą poruszały się postaci po danej stronie. Gdy postać aktualnie posiadająca ruch wykona akcję zaczyna się jego ocena, która zmienia ilość posiadanych przez stronę tur.
+W zależności od oceny tury mogą być odejmowane lub "wciskane". Zasady oceny wyglądają następująco:
+\begin{itemize}
+  \item{Jeśli postać trafi w słaby punkt innej postaci lub trafi cios krytyczny oraz posiada 1 lub więcej zwykłych tur, zwykła tura jest "wciskana"}
+  \item{Jeśli postać trafi w słaby punkt innej postaci lub trafi cios krytyczny oraz posiada same tury "wciśnięte", odejmowana jest "wciśnięta" tura}
+  \item{Trafienie niebędące trafieniem krytycznym lub trafienie w inny niż Słabość typ relacji powodeje odjęcie tur o konkretną ich liczbę priorytetyzując tury wciśnięte}
+  \item{Jeśli postać postanowi przeczekać turę, system zachowuje się tak samo jak przy trafieniu krytycznym lub trafieniu w słaby punkt}
+\end{itemize}
+Gdy stronie wykonującej akcje skończą się tury, następuje zmiana stron.
 
 \subsection*{Wybrany system walki}
-Do implementacji został wybrany klasyczny wariant systemu Press Turn z gry \cite{SMT3}. Mimo swojego skomplikowania (co może spowodować dłuższy czas uczenia modelu) posiada on bardzo dużo ciekawych interakcji związanych z turami, które sztuczna inteligencja będzie mogła wykorzystać na swoją korzyść.
+Do implementacji został wybrany system Press-Turn z gry \cite{SMT3}. Mimo swojego skomplikowania (co może spowodować dłuższy czas uczenia modelu) posiada on bardzo dużo ciekawych interakcji związanych z turami, które sztuczna inteligencja będzie mogła wykorzystać na swoją korzyść.
 
 
 \chapter{Implementacja}
@@ -176,13 +192,13 @@ Widok opcji posiada suwaki zmieniające głośność muzyki oraz dźwięków w a
 
 \begin{figure}[H]
   \hfill
-  \subfigure[Widok panelu głównego]{\includegraphics[width=0.45\textwidth]{menuscreen1.JPG}}
+  \subfigure[Widok panelu głównego]{\includegraphics[width=1\textwidth]{menuscreen1.JPG}}
   \hfill
-  \subfigure[Widok opcji]{\includegraphics[width=0.45\textwidth]{menuscreen2.JPG}}
+  \subfigure[Widok opcji]{\includegraphics[width=1\textwidth]{menuscreen2.JPG}}
   \hfill
   \caption{Zrzuty ekranu przedstawiające menu główne}
 \end{figure}
-
+\pagebreak
 \subsection{Scena CharacterCreator}
 Kreator postaci składa się z 2 widoków: panelu wyboru liczby aktorów w drużynie oraz kreatora postaci. Oba widoki posiadają też przycisk BACK powracający do menu głównego.
 
@@ -202,6 +218,7 @@ Lista statystyk postaci (sens statystyk zostanie wyjaśniony podczas omawiania s
   \item{Agility (pl. Zwinność) - zakres 1-99}
   \item{Luck (pl. Szczęście) - zakres 1-99}
 \end{enumerate}
+\pagebreak
 Postacie posiadają również Elementy i odpowiadające im relacje. Lista Elementów (kolejność od lewej według ustawienia w widoku):
 \begin{enumerate}
   \item{Obrażenia fizyczne}
@@ -223,19 +240,18 @@ Lista relacji Elementu z postacią (wraz ze skrótem widocznym w kreatorze, wpł
   \item{Absorbcja, skrót: "Abs", wpływ na turę: utrata 4 tur, wpływ na obrażenia: wyleczenie o wartość obrażeń}
 \end{enumerate}
 W skład kreatora wchodzi również lista z wyborem umiejętności. Każdy rekord listy posiada: pole wyboru umiejętności, jej nazwę, koszt oraz przypisany Element.
-
+\pagebreak
 \begin{figure}[H]
   \hfill
-  \subfigure[Widok panelu wyboru liczby aktorów]{\includegraphics[width=0.45\textwidth]{creatorscreen1.JPG}}
+  \subfigure[Widok panelu wyboru liczby aktorów]{\includegraphics[width=1\textwidth]{creatorscreen1.JPG}}
   \hfill
-  \subfigure[Widok kreatora postaci]{\includegraphics[width=0.45\textwidth]{creatorscreen2.JPG}}
+  \subfigure[Widok kreatora postaci]{\includegraphics[width=1\textwidth]{creatorscreen2.JPG}}
   \hfill
   \caption{Zrzuty ekranu przedstawiające kreator postaci}
 \end{figure}
-
+\pagebreak
 \subsection{Scena BattleScene}
 Rozbudowana scena przedstawiająca informacje na temat aktualnego stanu walki. Stworzona na podstawie UI z gry~\cite{SMT3}.
-
 Scena posiada następujące elementy UI:
 \begin{itemize}
   \item{Przycisk Leave Battle - służy do wyjścia z walki}
@@ -246,16 +262,15 @@ Scena posiada następujące elementy UI:
   \item{Dziennik zdarzeń walki - pokazuje umiejętności użyte od początku walki przez jakąkolwiek postać}
   \item{Stan drużyny gracza - pokazuje paski z imionami wszystkich postaci gracza, jak i ich stanem zdrowia i many}
 \end{itemize}
-
 \begin{figure}[H]
   \hfill
-  \subfigure[UI gry~\cite{SMT3}]{\includegraphics[width=0.45\textwidth]{smt3_screenshot.jpg}}
+  \subfigure[UI gry~\cite{SMT3}]{\includegraphics[width=1\textwidth]{smt3_screenshot.jpg}}
   \hfill
-  \subfigure[UI sceny walki w projekcie]{\includegraphics[width=0.45\textwidth]{battlescreen.JPG}}
+  \subfigure[UI sceny walki w projekcie]{\includegraphics[width=1\textwidth]{battlescreen.JPG}}
   \hfill
   \caption{Zrzuty ekranu porównujące UI stworzone w projekcie do występującego w grze \cite{SMT3}}
 \end{figure}
-
+\pagebreak
 \subsection{Implementacja systemu Press Turn}
 System Press Turn zaimplementowany w projekcie działa na 2 obiektach na scenie BattleScene:
 \begin{itemize}
@@ -281,18 +296,19 @@ Po wczytaniu się sceny, BattleManager zostaje zainicjowany. Posiada on następu
   \item{currentIndex - wartość pomocnicza przechowująca indeks aktualnie poruszającej się postaci}
   \item{turnQueue - lista z wartościami prawda fałsz odpowiadająca ilości tur (zwykłe tury to wartości true, "wciśnięte" tury to wartości false)}
 \end{itemize}
+\pagebreak
 Po wczytaniu wszystkich potrzebnych zasobów, BattleManager ustawia wartości gameState na START\_SIDE oraz isBusy na false.
 \subsubsection{Główna pętla systemu walki}
 \label{petlagry}
 System walki operuje na funkcji Update wykonującej się co klatkę.
 \begin{figure}[H]
   \centering
-  \includegraphics[height=7cm]{updatebattle.JPG}
+  \includegraphics[height=10cm]{updatebattle.JPG}
   \caption{Funkcja Update w obiekcie BattleManager}
   \label{fig:UpdateBattle}
 \end{figure}
 
-Funkcja obsługuje tzw. pętle gry czyli algorytm zapętlający rozgrywkę. Pętla gry operuje na wywoływaniu 4 funkcji widocznych na \hyperref[fig:UpdateBattle]{Rysunek 3.4}. Pętla gry przedstawiona w postaci listy kroków prezentuje się następująco:
+Funkcja obsługuje tzw. pętle gry czyli algorytm zapętlający rozgrywkę. Pętla gry operuje na wywoływaniu 4 funkcji widocznych na \hyperref[fig:UpdateBattle]{Rysunek 4}. Pętla gry przedstawiona w postaci listy kroków prezentuje się następująco:
 \begin{enumerate}
   \item{Wywołuje się StartSide(), które uzupełnia listę tur - turnQueue oraz listę indeksów postaci - moveQueue}
   \item{Następuje aktualizacja currentIndex o pierwszy indeks z moveQueue, przenosząc ten index później na koniec listy moveQueue. Potem zmienia gameState na START\_TURN}
@@ -308,7 +324,7 @@ Funkcja obsługuje tzw. pętle gry czyli algorytm zapętlający rozgrywkę. Pęt
 \end{enumerate}
 
 \subsubsection{Działanie funkcji UseSkill() oraz wykorzystanie statystyk postaci}
-Wspomniana w pętli gry funkcja UseSkill() pełni kluczową funkcję w działaniu systemu walki. Głównym jej zadaniem jest pobranie zasobów (many oraz zdrowia) potrzebnych do użycia wybranej umiejętności, 
+Wspomniana w pętli gry funkcja UseSkill() pełni kluczową rolę w działaniu systemu walki. Głównym jej zadaniem jest pobranie zasobów (many oraz zdrowia) potrzebnych do użycia wybranej umiejętności, 
 aktywacja umiejętności na wybranym celu oraz zmiana tur na podstawie oceny relacji postaci do elementu umiejętności. Gdy dochodzi do aktywacji umiejętności, statystyki postaci atakującej i broniącej są przekazywane do funkcji przeliczającej obrażenia. 
 Formuły obrażeń prezentują się nastepująco:
 \[PhysicalAttack = 5*\sqrt{\frac{a.Strength}{b.Dexterity}*m}\]\[MagicalAttack = 5*\sqrt{\frac{a.Magic}{b.Dexterity}*m}\]
@@ -319,13 +335,14 @@ gdzie,
   \item{m - stała moc umiejętności}
 \end{itemize}
 Jedyna niewykorzystywana nigdzie statystyka to Luck, z uwagi na brak planowanej wcześniej implementacji ciosów krytycznych w systemie walki.
+Statystyka Agility jest wykorzystywana do określenia kolejności w kolejce poruszania się postaci.
 
 
 \section{Część aplikacji automatycznie trenująca model}
 Ta część aplikacji służy do trenowania modelu za pomocą pakietu ML-Agents. Składa się z 1 sceny Unity: TrainingScene.
 
 \subsection{Implementacja ML-Agents}
-Aby zacząć uczyć model w technice uczenia przez wzmacnianie potrzebne są środowisko oraz uczący się w nim agent.
+Aby zacząć uczyć model w technice uczenia przez wzmacnianie potrzebne jest środowisko oraz uczący się w nim agent.
 \subsubsection{Środowisko}
 Środowiskiem jest stworzony wcześniej system Press Turn z którego zostały usunięte niepotrzebne funkcje związane z UI. W rolę gracza wcieli się generator liczb losowych. Będzie on wybierał losową, dostępną umiejętność.
 Ilość postaci po stronie gracza jak i statystyki, umiejętności oraz relacje z Elementami będą losowane dla wszystkich postaci. Aby umożliwić powyższe zmieny, dodane zostały następujące elementy do środowiska:
@@ -342,7 +359,7 @@ Ilość postaci po stronie gracza jak i statystyki, umiejętności oraz relacje 
 \end{itemize}
 
 \subsubsection{Agent}
-Implementacja oparta o artykuł~\cite{MLAgentsStartegyGuide}. Aby zaimplementować Agenta za pomocą pakietu ML-Agents należało stworzyć nową klasę dziedziczącą po klasie Agent oraz określenie jakie wartości będzie on przewidywał. 
+Implementacja oparta o artykuł~\cite{MLAgentsStartegyGuide}. Aby zaimplementować Agenta za pomocą pakietu ML-Agents należało stworzyć nową klasę dziedziczącą po klasie Agent oraz określić jakie wartości będzie on przewidywał. 
 W przypadku tej pracy, Agent będzie przewidywał 2 wartości: 
 \begin{itemize}
   \item{Indeks wybranej umiejętności}
@@ -351,21 +368,26 @@ W przypadku tej pracy, Agent będzie przewidywał 2 wartości:
 Klasa Agent wymaga do działania nadpisania niektórych swoich metod. Lista przeciążonych metod wraz z opisem nowej funkcjonalności:
 \begin{itemize}
   \item{void Heurestic() - z metody została usunięta cała funkcjonalność, przez fakt powodowania niepotrzebnych ostrzeżeń w konsoli Unity. Funkcja pozostaje pusta ze względu na nie używanie jej w projekcie.}
-  \item{void CollectObservations() - metoda zajmuje się zebraniem danych ze środowiska oraz wysłanie ich do analizy(spis wszystkich zmiennych branych pod uwagę podczas uczenia został opisany niżej)}
+  \item{void CollectObservations() - metoda zajmuje się zebraniem danych ze środowiska oraz wysłanie ich do analizy (spis wszystkich zmiennych branych pod uwagę podczas uczenia został opisany niżej)}
   \item{void OnActionReceived() - metoda odczytuje wybrane przez Agenta wartości i przekazuje je do środowiska}
   \item{void WriteDiscreteMask() - metoda tworzy maskę uniemożliwiającą wybranie przez sztuczną inteligencję umiejętności, do których nie ma dostępu oraz postaci nie żyjących lub nie istniejących}
   \item{void OnEpisodeBegin() - metoda przywraca stan początkowy środowiska w którym się znajduje}
 \end{itemize}
 \begin{figure}[H]
+  \centering
+  \subfigure[Funkcja Heurestic() oraz CollectObservations()]{\includegraphics[width=1\linewidth]{Heurestic_Collect.JPG}}
   \hfill
-  \subfigure[Funkcja Heurestic() oraz CollectObservations()]{\includegraphics[width=0.45\textwidth]{Heurestic_Collect.JPG}}
+  \subfigure[Funkcja OnActionReceived()]{\includegraphics[width=1\linewidth]{OnActionReceived.JPG}}
   \hfill
-  \subfigure[Funkcja OnActionReceived()]{\includegraphics[width=0.45\textwidth]{OnActionReceived.JPG}}
+  \subfigure[Funkcja WriteDiscreteMask()]{\includegraphics[width=0.70\linewidth]{Mask.JPG}}
   \hfill
-  \subfigure[Funkcja WriteDiscreteMask()]{\includegraphics[width=0.45\textwidth]{Mask.JPG}}
+\end{figure}
+\begin{figure}[H]
+  \ContinuedFloat
+  \centering
+  \subfigure[Funkcja OnEpisodeBegin()]{\includegraphics[width=1\linewidth]{Episode.JPG}}
   \hfill
-  \subfigure[Funkcja OnEpisodeBegin()]{\includegraphics[width=0.45\textwidth]{Episode.JPG}}
-  \hfill
+  \addtocounter{figure}{1}
   \caption{Zrzuty ekranu prezentujące ciała nadpisanych funkcji}
 \end{figure}
 Aby ML-Agents mogło działać poprawnie w systemie turowym, trzeba było dodatkowo wyłączyć Automatyczne Kroki Środowiskowe poprzez funkcję Awake() Agenta. Do ciała funkcji należało wpisać: \verb|Academy.Instance.AutomaticSteppingEnabled = false;|
@@ -378,7 +400,6 @@ Dodatkowo do klasy zostały zaimplementowane dodatkowe metody oraz właściwośc
   \item{NotifyEndEpisode() - metoda daje nagrodę sztucznej inteligencji za wykonane akcje i kończy epizod}
   \item{GetOutput() - metoda czekająca na to, aż ML-Agents zwróci wynik}
 \end{itemize}
-
 \subsubsection{Interakcja środowiska z agentem}
 Aby cała struktura uczenia działała, trzeba sprawić aby agent posiadał interakcje ze środowiskiem. W tym celu dostosowano wspomniany w sekcji \nameref{petlagry} algorytm petli gry na potrzeby trenowania modelu.
 Nowy algorytm pętli gry wygląda następująco:
@@ -396,7 +417,7 @@ Nowy algorytm pętli gry wygląda następująco:
   \item{Wywołaj funkcję END\_SIDE, która zmienia wartość isPlayerTurn na przeciwną sobie i zmienia wartość gameState na START\_SIDE. Przejdź do punktu 2.}
   \item{Wywołaj funkcje NotifyEndEpisode(), która daje nagrodę dla modelu i powoduje przejście do punktu 1.}
 \end{enumerate}
-
+\pagebreak
 \subsubsection{Zmienne wybrane do uczenia}
 \label{zmienne}
 Zmiennych uczących jest łączne 87. W ich skład wchodzą:
@@ -415,9 +436,10 @@ W przypadku gdy aktor nie został stworzony w danym epizodzie, wszystkie 17 przy
 \subsection{UI}
 \begin{figure}[H]
   \centering
-  \includegraphics[height=7cm]{trainingui.JPG}
+  \includegraphics[height=8cm]{trainingui.JPG}
   \caption{Widok UI do nadzoru trenowania modelu}
 \end{figure}
+\pagebreak
 Widok składa się z 2 elementów:
 \begin{enumerate}
   \item{Listy środowisk}
@@ -475,12 +497,12 @@ Aby skonfigurować wirtualne środowisko, należy:
   pip install mlagents
   \end{lstlisting}
   }
-  \item{Zainstalować pakiety wchodzące w skład biblioteki PyTorch wpisująć:
+  \item{Zainstalować pakiety wchodzące w skład biblioteki PyTorch wpisując:
   \begin{lstlisting}
   pip install torch torchvision torchaudio
   \end{lstlisting}
   }
-  \item{Zmienić wersję pakietu protobuf, gdyż ta instalowana razem z ML-Agents nie działa poprawnie za pomocą komendy:
+  \item{Zmienić wersję pakietu protobuf, gdyż ta instalowana razem z ML-Agents nie działa poprawnie, za pomocą komendy:
   \begin{lstlisting}
   pip install protobuf==3.20.3
   \end{lstlisting}
@@ -519,9 +541,10 @@ Pierwszym etapem jaki trzeba wykonać jest wytrenowanie modelu. Aby to zrobić t
   \item{Gdy będziemy uważać, że model jest dostatecznie wytrenowany, należy wpierw opuścić playtest, a następnie w zatrzymać uczenie w wierszu poleceń za pomocą skrótu CTRL+C.
   Po zatrzymaniu, ml-agents wyświetli nazwę oraz ścieżkę do pliku z rozszerzeniem .onnx w której model został zapisany}
 \end{enumerate}
-Wszystkie pliki wynikowe ML-Agents znajdują się w folderze results/ppo/. Jest możliwość uruchomienia aplikacji Tensorboard aby obserwować przebieg uczenia, lecz z uwagi na to, 
-że pakiety wykorzystywane przez ML-Agents są przestarzałe, nie są kompatybilne z pakietami wymaganymi przez pakiet Tensorflow (potrzebny do działania aplikacji Tensorboard) wykorzystujący te same pakiety ale w nowszej wersji.
+Wszystkie pliki wynikowe ML-Agents znajdują się w folderze results/ppo/. Jest możliwość uruchomienia aplikacji Tensorboard, aby obserwować przebieg uczenia, lecz z uwagi na to, 
+że pakiety wykorzystywane przez ML-Agents są przestarzałe, nie są kompatybilne z pakietami wymaganymi przez pakiet Tensorflow (potrzebny do działania aplikacji Tensorboard) wykorzystujący te same pakiety, ale w nowszej wersji.
 Po próbach instalacji starszych wersji pakietów, nie udało się uzyskać działającej aplikacji Tensorboard, przez co finalnie nie jest dostępna w implementacji.
+\pagebreak
 \subsection{Uruchomienie symulacji}
 Po wytrenowaniu modelu, trzeba go przypisać do sztucznej inteligencji na scenie z symulacją. Aby to zrobić należy wykonać następujące kroki:
 \begin{enumerate}
@@ -593,6 +616,17 @@ podczas gry będzie możliwe.
   Tuomas Haarnoja, Aurick Zhou, Pieter Abbeel, Sergey Levine, 
   \textit{Soft Actor-Critic: Off-Policy Maximum Entropy Deep Reinforcement Learning with a Stochastic Actor},
   (2018 r.)
+
+  \bibitem{RLLearningInTBRPG}
+  SangGyu Nam, Kokolo Ikeda,
+  \textit{Generation of Diverse Stages in Turn-Based RolePlaying Game using Reinforcement Learning}
+  (2019 r.)
+
+  \bibitem{PlayerPreferencesInRPGs}
+  Ville Mäkelä, Albrecht Schmidt,
+  \textit{I Don’t Care as Long as It’s Good: Player Preferences for
+  Real-Time and Turn-Based Combat Systems in Computer RPGs}
+  (2020 r.)
 
   \bibitem{SMT3}
   Atlus,
