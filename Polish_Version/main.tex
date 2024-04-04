@@ -67,8 +67,8 @@ a summary containing the results and conclusions drawn from the implementation o
 \chapter{Wstęp}
 Sztuczna inteligencja w ciągu ostatnich lat objęła wiele dziedzin życia i ciągle dynamicznie się rozwija. 
 Jej zastosowanie jest bardzo rozległe, a jedną z branż o dużych perspektywach rozwoju tej technologii jest przemysł rozrywkowy, 
-w który wchodzą gry wideo. W grach można zastosować tę technologię do generowania misji i zadań dla graczy, aby nie były one powtarzalne, 
-stworzenia mądrego systemu automatycznej walki, dzięki któremu gracz nielubiący tego elementu w grze może go pominąć, oraz do stworzenia 
+w który wchodzą gry wideo. W grach można zastosować tę technologię do generowania zadań, poziomów czy postaci \cite{proceduralgen}, 
+stworzenia systemu do wykrywania graczy używających programów oszukujących w grach wieloosobowych \cite{cheating}, oraz do stworzenia 
 sztucznej inteligencji dla przeciwników gracza. Ostatnie z tych przykładowych zastosowań zostanie omówione pod względem teoretycznym i praktycznym 
 zgodnie z tematem pracy.
 
@@ -124,14 +124,24 @@ lub też jeden z czterech pakietów wykorzystywanych przez RL Agents.
 \subsection*{Wybrany silnik i pakiet do uczenia maszynowego}
 Do pracy wybrałem Unity z pakietem ML-Agents przez wzgląd na moje wcześniejsze doświadczenie z Unity i językiem C\#. Uważam jednak, że dużo bardziej rozbudowany RL Agents na silniku Godot jest lepszym wyborem do tego typu projektu, gdyż daje dużo większe pole do dostosowania uczenia dla osiągnięcia lepszych rezultatów.
 
-
+\pagebreak
 \section{Algorytmy do uczenia maszynowego}
 \label{algorithms}
-Unity ML-Agents posiada dwa algorytmy uczące PPO (ang. Proximal Policy Optimization) oraz SAC (ang. Soft Actor-Critic). Pierwszy z nich jest podstawowym algorytmem używanym w pakiecie. Według \cite{MLAgentsDocs} algorytm PPO jest algorytmem ogólnego przeznaczenia i jest bardziej stabilny w porównaniu z innymi algorytmami uczenia przez wzmacnianie.
-To samo źródło opisuje również różnicę między algorytmem SAC i PPO. SAC jest algorytmem ,,off-policy'', kiedy PPO jest algorytmem ,,on-policy''. Oznacza to, że SAC uczy się z doświadczeń zebranych w dowolnym momencie w przeszłości, a podczas uczenia są one losowo dobierane do treningu, gdzie w PPO występuje ,,policy'',
-które reguluje podejmowanie decyzji i jest ulepszane z każdą iteracją uczenia. Dodatkowe informacje o algorytmie PPO znajdują się w~\cite{PPOArticle}, a o SAC w~\cite{SACArticle}. 
+Unity ML-Agents posiada dwa algorytmy uczące PPO (ang. Proximal Policy Optimization) oraz SAC (ang. Soft Actor-Critic). Pierwszy z nich jest podstawowym algorytmem używanym w pakiecie.
 
-\pagebreak
+PPO jest algorytmem ,,on-policy'', kiedy SAC jest algorytmem ,,off-policy''. 
+Samo określenie Policy odnosi się do strategii wyboru akcji przez agenta w aktualnym stanie środowiska. 
+W skład tej strategii wchodzi zarówno wybór akcji agenta jak i aktualizacja modelu zależna od nagród i kar zwracanych przez środowisko po wykonaniu akcji.
+
+Różnica między algorytmami ,,on-policy'' i ,,off-policy'' zależy od tego czy obie funkcjonalności w Policy są od siebie odseparowane. 
+Jeśli Policy wybierające akcję agenta jest inne od Policy aktualizującego model to algorytm jest ,,off-policy'', 
+natomiast jeśli Policy odpowiedzialne za wybór akcji jest takie same co aktualizujące model, to algorytm jest ,,on-policy''. 
+Szczegółowe informacje na temat Policy znajdują się w \cite{RLBook}.
+
+Według \cite{MLAgentsDocs} algorytm PPO jest algorytmem ogólnego przeznaczenia i jest bardziej stabilny w porównaniu z innymi algorytmami uczenia przez wzmacnianie.
+Dodatkowe informacje o algorytmie PPO znajdują się w~\cite{PPOArticle}, a o SAC w~\cite{SACArticle}. 
+
+
 Do projektu wybrany został algorytm PPO z uwagi na wcześniej podaną stabilność oraz fakt, że jest on algorytmem będącym ponad 6 lat w pakiecie ML-Agents co sugeruje, że jest on lepiej rozwiniętym rozwiązaniem w pakiecie.
 
 \section{Systemy walki w turowych grach RPG}
@@ -159,7 +169,7 @@ Gdy kolejka postaci zostanie stworzona oraz postać w drużynie gracza ma aktual
 którą postać ma wykonać. Po jej wybraniu, postać wykonuje akcję i przechodzi na koniec kolejki, przekazując turę następnej postaci się w 
 niej znajdującej. System ten został również użyty w grach Yakuza: Like a Dragon, Like a Dragon: Infinite Wealth czy Super Mario RPG.
 \subsection{Active Time Battle}
-System walki charakteryzujący się tym, że każda postać na początku zaczyna z pustym paskiem tury, ładowanym się w równych interwałach. 
+System walki charakteryzujący się tym, że każda postać na początku zaczyna z pustym paskiem tury, ładującym się w równych interwałach. 
 Gdy tura jakiejś postaci zostanie w pełni naładowana, walka zatrzymuje się, a postacie z naładowaną turą wybierają akcję, jaką mają wykonać. 
 Następnie pasek tury jest dalej ładowany. Gdy ładowanie dobiegnie do końca, postać wykona wybraną wcześniej akcję i resetuje ładowanie tury 
 do wartości początkowej. System ten jest znany z gier Chrono Trigger, Child of Light oraz serii Final Fantasy. Dodatkowe informacje na temat systemu walki oraz jego implementacji znajdują się w~\cite{ATB,PlayerPreferencesInRPGs}.
@@ -194,8 +204,72 @@ Gdy stronie wykonującej akcje skończą się tury, następuje zmiana stron. Wi�
 \subsection*{Wybrany system walki}
 Do implementacji został wybrany system Press Turn. Mimo swojego skomplikowania (co może spowodować dłuższy czas uczenia modelu) posiada on bardzo dużo ciekawych interakcji związanych z turami, które sztuczna inteligencja będzie mogła wykorzystać na swoją korzyść.
 
+\chapter{Opis działania aplikacji}
+Projekt składa się z dwóch aplikacji:
+\begin{itemize}
+  \item Testującej model (symulator walki)
+  \item Uczącej model
+\end{itemize}
+Aplikacje nie są kompilowane do plików uruchomieniowych, gdyż działają na funkcji testowania gry w Unity.
+Funkcja ta jest wymagana przez pakiet ML-Agents do uczenia modelu.
+Powoduje to konieczność zainstalowania silnika Unity, aby móc uruchomić obie aplikacje.
+\section{Aplikacja testująca model}
+Aplikacja testująca model została stworzona w postaci symulatora walki dla systemu Press Turn. Umożliwia ona dostosowanie statystyk postaci gracza jak i przeciwnika sterowanego przez wytrenowany model.
+Składa się z 3 widoków:
+\begin{enumerate}
+  \item Menu głównego
+  \item Kreatora postaci
+  \item Symulatora walki
+\end{enumerate}
 
-\chapter{Implementacja}
+\subsection{Menu główne}
+Zawiera przycisk przechodzący do kreatora postaci, przycisk umożliwiający wyjście z aplikacji oraz menu opcji w którym jest możliwość dostosowania głośności muzyki i dźwięków w symulatorze.
+Ustawienia graficzne nie były potrzebne w aplikacji przez uruchamianie jej w środowisku testowym Unity, które dostosowywuje rozdzielczość do okna aplikacji.
+
+\begin{figure}[H]
+  \includegraphics[width=1\textwidth]{menuscreen1.JPG}
+  \caption{Widok menu głównego, \textit{Źródło: własna inicjatywa}}
+\end{figure}
+\begin{figure}[H]
+  \includegraphics[width=1\textwidth]{menuscreen2.JPG}
+  \caption{Widok menu opcji, \textit{Źródło: własna inicjatywa}}
+\end{figure}
+\pagebreak
+\subsection{Kreator postaci}
+Kreator postaci umożliwia dostosowanie ilości postaci po stronie gracza oraz imienia i cech sojuszników i przeciwnika. Informacje o tym czym są, i za co odpowiadają cechy znajdują się w rozdziale ,,[tutaj odnośnik do highendowego opisu implementacji systemu Press Turn]''. Liczba przeciwników w każdej rozgrywce wynosi 1, aby wykluczyć zmieniającą się liczbę przeciwników, która może skomplikować proces uczenia.
+\begin{figure}[H]
+  \includegraphics[width=1\textwidth]{creatorscreen1.JPG}
+  \caption{Widok panelu wyboru liczby aktorów, \textit{Źródło: własna inicjatywa}}
+\end{figure}
+\begin{figure}[H]
+  \includegraphics[width=1\textwidth]{creatorscreen2.JPG}
+  \caption{Widok kreatora postaci, \textit{Źródło: własna inicjatywa}}
+\end{figure}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\chapter{Implementacja (OBSOLETE)}
 Aplikacja jest podzielona na dwie części: automatycznie trenującą model oraz testującą model w symulatorze walki.
 
 
@@ -643,6 +717,16 @@ Nie jest pewne, czy standardowa rozgrywka jest w stanie wyprodukować na tyle du
 
 
 \begin{thebibliography}{9}
+  \bibitem{proceduralgen}
+  Sebastian Risi, Julian Togelius
+  \textit{Increasing generality in machine learning through procedural content generation},
+  (2020 r.)
+
+  \bibitem{cheating}
+  José Pedro Pinto, André Pimenta, Paulo Novais
+  \textit{Deep learning and multivariate time series for cheat detection in video games},
+  (2021 r.)
+  
   \bibitem{MachineLearningTypes}
   Shagan Sah,
   \textit{Machine Learning: A Review of Learning Types},
@@ -683,6 +767,11 @@ Nie jest pewne, czy standardowa rozgrywka jest w stanie wyprodukować na tyle du
   \url{https://docs.unrealengine.com/},
   (dostęp 06.01.2024r)
   
+  \bibitem{RLBook}
+  Richard S. Sutton, Andrew G. Barto
+  \textit{Reinforcement Learning: An Introduction, second edition},
+  (2020 r.)
+
   \bibitem{PPOArticle}
   John Schulman, Filip Wolski, Prafulla Dhariwal, Alec Radford, Oleg Klimov, 
   \textit{Proximal Policy Optimization Algorithms},
