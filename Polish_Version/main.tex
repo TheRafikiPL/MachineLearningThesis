@@ -14,6 +14,7 @@
 \pworkplace{Instytut Informatyki Technicznej\\Katedra Zastosowań Matematyki}
 
 \renewcommand{\thefigure}{\arabic{figure}}
+\renewcommand{\thetable}{\arabic{table}}
 \usepackage[bottom]{footmisc}
 \usepackage{hyperref}
 \usepackage{subfigure}
@@ -41,16 +42,17 @@
 \abstractpage
 {Zastosowanie metod uczenia maszynowego do stworzenia sztucznej inteligencji w turowych grach RPG}
 {Tematem pracy było zaimplementowanie sztucznej inteligencji uczącej się za pomocą metod uczenia maszynowego w turowej grze RPG. 
-Wytrenowany model ma sam podejmować decyzje o używanych akcjach w środowisku gry. Praca składa się z czterech głównych części.
-Pierwsza część omawia technologie wykorzystane w pracy oraz ich alternatywy. Druga część skupia się na implementacji wcześniej wspomnianych technologii.
-Trzecia część zawiera instrukcję użytkowania gotowej aplikacji. W czwartej części znajduje się podsumowanie, zawierające wyniki oraz wnioski wynikające z implementacji rozwiązania.}
+Wytrenowany model ma sam podejmować decyzje o używanych akcjach w środowisku gry. Praca składa się z pięciu głównych części.
+Pierwsza część omawia technologie wykorzystane w pracy oraz ich alternatywy. Druga część skupia się prezentacji gotowej aplikacji.
+Trzecia część to opis techniczny wybranych elementów aplikacji. Czwarta część zawiera instrukcję użytkowania gotowej aplikacji. 
+W piątej części znajduje się podsumowanie, zawierające wyniki oraz wnioski wynikające z implementacji rozwiązania.}
 {uczenie maszynowe, sztuczna inteligencja, gry RPG, uczenie przez wzmacnianie, turowe systemy walki}
 {The use of machine learning methods to create artificial intelligence in turn-based RPG games}
 %TODO: zupdateować angielskie tłumaczenie
 {The topic of the paper was the implementation of artificial intelligence, which learns through machine learning methods, in a turn-based RPG game.
 The trained model is supposed to make decisions about the actions used in the game environment on its own.
-The paper consists of four main parts. The first part discusses the technologies used in the work and their alternatives. The second part focuses on 
-the implementation of the aforementioned technologies. The third part contains user instructions for the finished application. The fourth part includes 
+The paper consists of five main parts. The first part discusses the technologies used in the work and their alternatives. The second part focuses on the presentation of the finished application.
+The third part is a technical description of selected application elements. The fourth part contains user instructions for the finished application. The fifth part includes 
 a summary containing the results and conclusions drawn from the implementation of the solution.}
 {machine learning, artificial intelligence, RPG games, reinforcement learning, turn-based battle system}
 
@@ -77,8 +79,7 @@ Praca ma na celu zbadanie możliwości implementacji sztucznej inteligencji dla 
 - gry, w których gracz wciela się w rolę postaci występujących w fikcyjnym świecie. Gracze ponoszą wszelkie konsekwencje swoich akcji jako postać w świecie gry.}
 z turowym systemem walki\footnote{Turowy system walki - algorytm systemu walki, który zarządza kolejnością poruszania się jego uczestników przekazując możliwość wykonania akcji według uporządkowanej kolejności określonej przez ten system. Można go porównać do topologii sieciowej token ring, gdzie żądania w danym momencie może przekazywać tylko osoba posiadająca token (w przypadku turowego systemu walki token jest nazywany turą).}. 
 Wynikiem pracy będą dwie aplikacje: jedna trenująca model, a druga testująca model w postaci symulatora walki. 
-Treść pracy będzie stanowić opisy technologii użytych w pracy wraz z alternatywami, opis implementacji rozwiązania na podstawie wybranych 
-wcześniej technologii, instrukcję obsługi napisanej aplikacji, przykładowe wyniki powstałe w wyniku uruchomienia obu aplikacji oraz wnioski poimplementacyjne.
+Treść pracy będzie stanowić opisy technologii użytych w pracy wraz z alternatywami, opis gotowego rozwiązania, opis techniczny wybranych elementów aplikacji, instrukcję obsługi napisanej aplikacji, przykładowe wyniki powstałe w wyniku uruchomienia obu aplikacji oraz wnioski poimplementacyjne.
 
 \chapter{Technologie}
 W tym rozdziale zostaną szczegółowo omówione komponenty potrzebne do stworzenia całego tytułowego projektu. Opisane są również technologie, które nie zostały użyte w projekcie aby pokazać, że implementację można przeprowadzić na wiele różnych sposobów. Według kolejności wyboru są to: 
@@ -115,7 +116,7 @@ Bazuje na czterech innych pakietach\footnote{Pakiety na których bazuje RL Agent
 oraz wspiera ponad 12 algorytmów uczenia. Więcej informacji o RL Agents można znaleźć w artykule naukowym poświęconym tej technologii~\cite{GodotRLAgentsArticle} oraz w dokumentacji dostępnej w repozytorium projektu~\cite{GodotRLAgentsDocs}.
 \subsection{Unreal Engine z pakietem Learning Agents}
 W porównaniu do innych pakietów, Learning Agents jest najmłodszy (powstał na początku 2023r.) oraz najsłabiej udokumentowany. Pakiet operuje algorytmami PPO oraz BC (ang. Behavioral Cloning)\footnote{Informacja pochodzi ze źródła (stan na 06.01.2024r.): \url{https://dev.epicgames.com/community/learning/tutorials/8OWY/unreal-engine-learning-agents-introduction}}. 
-Sam silnik graficzny Unreal Engine jest narzędziem z bardzo dużym wsparciem i możliwościami. Posiada wsparcie dla języka C++ oraz funkcji Blueprints umożliwiającej programowanie wizualne (bez pisania kodu). 
+Sam silnik graficzny Unreal Engine jest narzędziem z bardzo dużym wsparciem i możliwościami. Posiada możliwość programowania w języku C++ oraz funkcję Blueprints umożliwiającą programowanie wizualne (bez pisania kodu). 
 Dokumentacja zarówno silnika Unreal Engine jak i pakietu Learning Agents znajduje się w~\cite{UnrealDocs}.
 \subsection{Własny silnik z wykorzystaniem różnych pakietów do uczenia maszynowego}
 Rozwiązanie oferujące największą swobodę, ale też najtrudniejsze w implementacji. Do stworzenia środowiska gry potrzebna jest biblioteka graficzna pomagająca stworzyć silnik np. OpenGL
@@ -145,7 +146,7 @@ Dodatkowe informacje o algorytmie PPO znajdują się w~\cite{PPOArticle}, a o SA
 Do projektu wybrany został algorytm PPO z uwagi na wcześniej podaną stabilność oraz fakt, że jest on algorytmem będącym ponad 6 lat w pakiecie ML-Agents co sugeruje, że jest on lepiej rozwiniętym rozwiązaniem w pakiecie.
 
 \section{Systemy walki w turowych grach RPG}
-Systemów walki turowej w grach RPG jest bardzo dużo, lecz większość gier opiera się o znane już systemy wprowadzając do nich tylko minimalne zmiany. Pewne elementy są jednak stałe i można je zauważyć w każdej grze z tego gatunku.
+Systemów walki turowej w grach RPG jest bardzo dużo, lecz w większości gier są one oparte o znane już systemy. Pewne elementy są jednak stałe i można je zauważyć w każdej grze z tego gatunku.
 \begin{itemize}
   \item{Rozgrywka polega na wzajemnym przekazywaniu tur postaci gracza z przeciwnikami},
   \item{Podczas tury gracz oraz przeciwnicy wykorzystują swoje tury jako zasób do wykonywania akcji},
@@ -207,8 +208,8 @@ Do implementacji został wybrany system Press Turn. Mimo swojego skomplikowania 
 \chapter{Opis działania aplikacji}
 Projekt składa się z dwóch aplikacji:
 \begin{itemize}
-  \item Testującej model (symulator walki)
-  \item Uczącej model
+  \item Testującej model (symulator walki),
+  \item Uczącej model.
 \end{itemize}
 Aplikacje nie są kompilowane do plików uruchomieniowych, gdyż działają na funkcji testowania gry w Unity.
 Funkcja ta jest wymagana przez pakiet ML-Agents do uczenia modelu.
@@ -217,9 +218,9 @@ Powoduje to konieczność zainstalowania silnika Unity, aby móc uruchomić obie
 Aplikacja testująca model została stworzona w postaci symulatora walki dla systemu Press Turn. Umożliwia ona dostosowanie statystyk postaci gracza jak i przeciwnika sterowanego przez wytrenowany model.
 Składa się z 3 widoków:
 \begin{enumerate}
-  \item Menu głównego
-  \item Kreatora postaci
-  \item Symulatora walki
+  \item Menu głównego,
+  \item Kreatora postaci,
+  \item Symulatora walki.
 \end{enumerate}
 
 \subsection{Menu główne}
@@ -236,146 +237,136 @@ Ustawienia graficzne nie były potrzebne w aplikacji przez uruchamianie jej w ś
 \end{figure}
 \pagebreak
 \subsection{Kreator postaci}
-Kreator postaci umożliwia dostosowanie ilości postaci po stronie gracza oraz imienia i cech sojuszników i przeciwnika. Informacje o tym czym są, i za co odpowiadają cechy znajdują się w rozdziale ,,[tutaj odnośnik do highendowego opisu implementacji systemu Press Turn]''. Liczba przeciwników w każdej rozgrywce wynosi 1, aby wykluczyć zmieniającą się liczbę przeciwników, która może skomplikować proces uczenia.
+Kreator postaci umożliwia dostosowanie postaci według własnych potrzeb. Na początku prosi o wybranie ilości postaci po stronie gracza, następnie przechodząc do samego kreatora poszczególnych postaci gdzie można wybrać imie postaci, jej cechy, relacje z rodzajami obrażeń i umiejętności. 
+Informacje o tym czym są, i za co odpowiadają te elementy kreatora znajdują się w rozdziale ,,\hyperref[systempressturn]{Walka w systemie Press Turn}''. Liczba przeciwników w każdej rozgrywce wynosi 1, aby wykluczyć zmieniającą się liczbę przeciwników, która może skomplikować proces uczenia.
 \begin{figure}[H]
   \includegraphics[width=1\textwidth]{creatorscreen1.JPG}
-  \caption{Widok panelu wyboru liczby aktorów, \textit{Źródło: własna inicjatywa}}
+  \caption{Widok panelu wyboru liczby postaci, \textit{Źródło: własna inicjatywa}}
 \end{figure}
 \begin{figure}[H]
   \includegraphics[width=1\textwidth]{creatorscreen2.JPG}
   \caption{Widok kreatora postaci, \textit{Źródło: własna inicjatywa}}
 \end{figure}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-\chapter{Implementacja (OBSOLETE)}
-Aplikacja jest podzielona na dwie części: automatycznie trenującą model oraz testującą model w symulatorze walki.
-
-
-\section{Część aplikacji testująca model}
-Ta część aplikacji została zaimplementowana jako pierwsza w celu przygotowania systemu Press Turn. Składa się z 3 scen Unity: MainMenu, CharacterCreator oraz BattleScene.
-
-\subsection{Scena MainMenu}
-Menu Główne składa się z 2 widoków: Panelu głównego oraz opcji. W panelu głównym są dostępne przyciski START, CONFIG oraz EXIT. START służy do uruchomienia kreatora postaci, CONFIG otwiera widok opcji, a EXIT służy do zamknięcia aplikacji\footnote{Przycisk zamknięcia aplikacji nie działa podczas testowania aplikacji na silniku, tylko gdy aplikacja zostanie wyeksportowana.}.
-Widok opcji posiada suwaki zmieniające głośność muzyki oraz dźwięków w aplikacji i przycisk zapisujący ustawienia.
-
+\subsection{Symulator walki}
+Symulator walki służy do testowania modelu za pomocą walki testowej gracza z przeciwnikiem sterowanym przez wytrenowany model. Walka odbywa się we wcześniej wybranym systemie Press Turn.
+Widok symulatora zawiera prawie wyłącznie elementy informujące o aktualnym stanie walki. Są to:
+\begin{itemize}
+  \item Ilość tur zwykłych oraz naznaczonych,
+  \item Wskaźniki aktualnego stanu zdrowia oraz many postaci gracza,
+  \item Wskaźnik aktualnego zdrowia przeciwnika,
+  \item Widok drużyny gracza, gdzie aktualnie wykonująca akcję postać posiada obramowanie,
+  \item Lista umiejętności postaci gracza, która aktualnie wykonuje ruch,
+  \item Dziennik zdarzeń zawierający akcje wykonane przez uczestników walki.
+\end{itemize}
+Przeznaczenie wymienionych wcześniej zasobów zdrowia oraz many zostało opisane w rozdziale ,,\hyperref[systempressturn]{Walka w systemie Press Turn}''.
+Ułożenie elementów dla widoku symulatora zostało oparte o UI\footnote{UI (ang. User Interface, pl. Interfejs Użytkownika) - Elementy wizualne umożliwiające interakcję użytkownika z aplikacją.} sceny walki z gry \cite{SMT3}. 
 \begin{figure}[H]
-  \hfill
-  \subfigure[Widok panelu głównego, \textit{Źródło: własna inicjatywa}]{\includegraphics[width=1\textwidth]{menuscreen1.JPG}}
-  \hfill
-  \subfigure[Widok opcji, \textit{Źródło: własna inicjatywa}]{\includegraphics[width=1\textwidth]{menuscreen2.JPG}}
-  \hfill
-  \caption{Zrzuty ekranu przedstawiające menu główne}
+  \includegraphics[width=1\textwidth]{battlescreen.JPG}
+  \caption{Widok symulatora walki w projekcie, \textit{Źródło: własna inicjatywa}}
+\end{figure}
+\begin{figure}[H]
+  \includegraphics[width=1\textwidth]{smt3_screenshot.jpg}
+  \caption{UI sceny walki z gry Shin Megami Tensei III: Nocturne, \textit{Źródło:~\cite{SMT3}}}
+\end{figure}
+\section{Aplikacja trenująca model}
+Aplikacja trenująca model zawiera tylko jeden widok. Zawiera on element pokazujący aktualny stan środowiska uczącego oraz listę tych środowisk. 
+\pagebreak
+
+Domyślnie pokazywany jest stan pierwszego środowiska, jednak można to zmienić klikając na przycisk z nazwą innego środowiska uczącego. 
+Oprócz cech postaci i informacji o turach, widocznych również w aplikacji testującej model, w widoku jest dostępny przycisk resetujący środowisko oraz informacja o ostatnio wybranej umiejętności i postaci gracza przez trenowany model.
+
+Trening zaczyna się od wylosowania cech i umiejętności postaci przez generator liczb losowych. Proces ten wykonuje się co reset środowiska. Gdy przychodzi do tury gracza ten sam generator liczb losowych wybiera umiejętność aktualnie poruszającej się postaci.
+Tury przeciwnika wykonuje trenujący się model, który jest później nagradzony lub karany za swój wybór.
+Środowisko jest resetowane w przypadku wygranej bądź przegranej postaci sztucznej inteligencji, lub też jeżeli walka trwa więcej niż określona ilość tur. Proces uczenia trwa do momentu przerwania przez użytkownika aplikacji.
+
+Ilość środowisk, zakresy losowania statystyk, nagrody, kary i liczba tur potrzebna do resetu środowiska może być dostosowana według uznania użytkownika.
+\begin{figure}[H]
+  \includegraphics[width=1\textwidth]{trainingui.JPG}
+  \caption{Widok UI do nadzoru trenowania modelu, \textit{Źródło: własna inicjatywa}}
 \end{figure}
 \pagebreak
-\subsection{Scena CharacterCreator}
-Kreator postaci składa się z 2 widoków: panelu wyboru liczby aktorów w drużynie oraz kreatora postaci. Oba widoki posiadają też przycisk BACK powracający do menu głównego.
-
-
-\subsubsection{Panel wyboru liczby aktorów}
-Panel składa się z suwaka przyjmującego wartości całkowite w zakresie \textlangle 1, 4\textrangle oraz przycisk potwierdzający ilość aktorów o treści ACCEPT. Po jego wciśnięciu widok zmienia się na kreator postaci.
-
-\subsubsection{Kreator postaci}
-Składa się z przycisku Restart Actors wracającego do widoku wyboru liczby aktorów, przycisku Start Battle zaczynającego walkę gdy wszyscy aktorzy mają wypełnione pola statystyk, pola wyboru aktualnie edytowanego aktora oraz obszernego ekranu do wprowadzania statystyk postaci.
-Lista statystyk postaci\footnote{Przeznaczenie statystyk zostanie wyjaśniony podczas omawiania sceny walki}:
-\begin{enumerate}
-  \item{HP (ang. Health Points, pl. Punkty Życia) - zakres \textlangle 1, 9999\textrangle},
-  \item{MP (ang. Mana Points, pl. Punkty Many) - zakres \textlangle 1, 9999\textrangle},
-  \item{Strength (pl. Siła) - zakres \textlangle 1, 99\textrangle},
-  \item{Magic (pl. Magia) - zakres \textlangle 1, 99\textrangle},
-  \item{Dexterity (pl. Sprawność) - zakres \textlangle 1, 99\textrangle},
-  \item{Agility (pl. Zwinność) - zakres \textlangle 1, 99\textrangle},
-  \item{Luck (pl. Szczęście) - zakres \textlangle 1, 99\textrangle}.
-\end{enumerate}
-\pagebreak
-Postacie posiadają również Elementy i odpowiadające im relacje. Lista Elementów:
-\begin{enumerate}
-  \item{Obrażenia fizyczne},
-  \item{Ogień},
-  \item{Lód},
-  \item{Wiatr},
-  \item{Elektryczność},
-  \item{Światłość},
-  \item{Ciemność},
-  \item{Nadzwyczajny - ukryty element, zawsze o relacji neutralnej}.
-\end{enumerate}
-Lista relacji Elementu z postacią (wraz ze skrótem widocznym w kreatorze, wpływem na tury oraz wpływem na obrażenia):
-\begin{enumerate}
-  \item{Neutralny, skrót: \textit{-}, wpływ na turę: utrata 1 tury, wpływ na obrażenia: brak},
-  \item{Słabość, skrót: \textit{Wk}, wpływ na turę: naznaczenie 1 tury, wpływ na obrażenia: +20\%},
-  \item{Odporność, skrót: \textit{Str}, wpływ na turę: utrata 1 tury, wpływ na obrażenia: -20\%},
-  \item{Niewrażliwość, skrót: \textit{Null}, wpływ na turę: utrata 2 tur, wpływ na obrażenia: zniwelowanie obrażeń},
-  \item{Odbicie, skrót: \textit{Rep}, wpływ na turę: utrata 4 tur, wpływ na obrażenia: odbicie wartości obrażeń (obrażenia odbite również podlegają ocenie, ale nie wpływają na tury oraz nie mogą odbić się drugi raz)},
-  \item{Absorbcja, skrót: \textit{Abs}, wpływ na turę: utrata 4 tur, wpływ na obrażenia: wyleczenie o wartość obrażeń}.
-\end{enumerate}
-W skład kreatora wchodzi również lista z wyborem umiejętności. Każdy rekord listy posiada: pole wyboru umiejętności, jej nazwę, koszt oraz przypisany Element.
-\pagebreak
-\begin{figure}[H]
-  \hfill
-  \subfigure[Widok panelu wyboru liczby aktorów, \textit{Źródło: własna inicjatywa}]{\includegraphics[width=1\textwidth]{creatorscreen1.JPG}}
-  \hfill
-  \subfigure[Widok kreatora postaci, \textit{Źródło: własna inicjatywa}]{\includegraphics[width=1\textwidth]{creatorscreen2.JPG}}
-  \hfill
-  \caption{Zrzuty ekranu przedstawiające kreator postaci}
-\end{figure}
-\pagebreak
-\subsection{Scena BattleScene}
-Rozbudowana scena przedstawiająca informacje na temat aktualnego stanu walki. Stworzona na podstawie UI\footnote{UI (ang. User Interface, pl. Interfejs Użytkownika) - Elementy wizualne umożliwiające interakcję użytkownika z aplikacją.} z gry~\cite{SMT3}.
-Scena posiada następujące elementy UI:
+\section{Walka w systemie Press Turn}
+\label{systempressturn}
+Rozdział powstał w celu uzupełnienia informacji o walce w systemie Press Turn. Są to informacje specyficzne dla implementacji dostepnej w tym projekcie. 
+Rozdział opisuje:
 \begin{itemize}
-  \item{Przycisk Leave Battle - służy do wyjścia z walki},
-  \item{Lista tur - czerwone znaczniki oznaczają naznaczone tury, a zielone zwykłe tury},
-  \item{Widok drużyny gracza - generowany automatycznie, obramowanie pokazuje kto aktualnie posiada ruch},
-  \item{Widok przeciwnika - sterowany przez wytrenowany model przeciwnik z widocznym paskiem zdrowia},
-  \item{Lista umiejętności - umożliwia wybór umiejętności aktualnie ruszającej się postaci. Po wyborze umiejętności gracz jest proszony o cel},
-  \item{Dziennik zdarzeń walki - pokazuje umiejętności użyte od podczas walki},
-  \item{Stan drużyny gracza - pokazuje paski z imionami wszystkich postaci gracza, jak i ich stanem zdrowia i many}.
+  \item Cechy postaci,
+  \item Możliwe akcji w systemie,
+  \item Rodzaje obrażeń oraz korelujące z nimi typy relacji.
 \end{itemize}
-\begin{figure}[H]
-  \hfill
-  \subfigure[UI sceny walki z gry Shin Megami Tensei III: Nocturne, \textit{Źródło:~\cite{SMT3}}]{\includegraphics[width=1\textwidth]{smt3_screenshot.jpg}}
-  \hfill
-  \subfigure[UI sceny walki w projekcie, \textit{Źródło: własna inicjatywa}]{\includegraphics[width=1\textwidth]{battlescreen.JPG}}
-  \hfill
-  \caption{Zrzuty ekranu porównujące UI stworzone w projekcie do występującego w grze \cite{SMT3}}
-\end{figure}
+\subsection{Cechy postaci}
+Każda postać występująca w walce posiada te same cechy:
+\begin{itemize}
+  \item Punkty Zdrowia (ang. Health Points) - jest to żywotność postaci. Jeśli spadnie do 0 postać ginie. Zdrowie można tracić odnosząc obrażenia od wrogich ataków lub używając umiejętności fizycznych.
+  \item Punkty Many (ang. Mana Points) - jest to zasób wykorzystywany do używania umiejętności magicznych postaci.
+  \item Siła (ang. Strength) - statystyka zwiększa obrażenia od ataku podstawowego oraz umiejętności fizycznych.
+  \item Magia (ang. Magic) - statystyka zwiększa obrażenia od umiejętności magicznych.
+  \item Sprawność (ang. Dexterity) - statystyka zmniejsza otrzymywane obrażenia.
+  \item Zwinność (ang. Agility) - statystyka definiuje miejsce w kolejce poruszania się postaci. Im większa statystyka, tym postać znajduje się wyżej w kolejce i wykona ruch przed innymi.
+  \item Szczęście (ang. Luck) - statystyka w implementacji nie używana. Pierwotnie miała definiować szansę na trafienie krytyczne ataku podstawowego oraz umiejętności fizycznych lecz w finalnej wersji aplikacji mechanika nie została zaimplementowana.
+\end{itemize}
+Zakres wartości jakie mogą przyjąć statystyki wynosi \textlangle 1, 99\textrangle. Wyjątek stanowią zdrowie i mana które ten zakres mają szerszy - \textlangle 1, 9999\textrangle.
 \pagebreak
-\subsection{Implementacja systemu Press Turn}
-System Press Turn zaimplementowany w projekcie działa na 2 obiektach sceny BattleScene:
+\subsection{Akcje postaci}
+Akcje postaci stanowią ich umiejętności. 
+Każda umiejętność ma swój rodzaj obrażeń, koszt oraz moc podstawową. Ostatni z tych parametrów określa podstawową ilość obrażeń zadanych przez umiejętność.
+Umiejętności w tej pracy trafiają zawsze tylko jeden, wybrany cel oraz mają 100\% szans na trafienie. 
+
+Wszystkie postacie posiadają dwie podstawowe umiejętności: atak podstawowy oraz przeczekanie tury. Umiejętności te nie kosztują postaci ani zdrowia, ani many.
+Reszta umiejętności to umiejętności opcjonalne, których postać nie musi posiadać. W projekcie każdy rodzaj obrażeń ma jedną umiejętność opcjonalną. 
+Istnieje również umiejętność przywracająca pewną część punktów zdrowia.
+
+\subsection{Rodzaje obrażeń i typy relacji}
+Rodzajów obrażeń w implementacji jest łącznie 8. W obrębie tego projektu są one nazwywane też Elementami. Lista Elementów prezentuje się nastepująco:
+\begin{enumerate}
+  \item Obrażenia fizyczne,
+  \item Ogień,
+  \item Lód,
+  \item Wiatr,
+  \item Elektryczność,
+  \item Światłość,
+  \item Ciemność,
+  \item Nadzwyczajny.
+\end{enumerate}
+Wszystkie Elementy, poza obrażeniami fizycznymi, powodują obrażenia magiczne. 
+Elementy mają również swoje relacje. Zestawy relacji są indywidualne dla każdej postaci.
+\begin{table}[H]
+  \begin{center}
+    \caption{Typy relacji do Elementów w projekcie wraz z ich efektami.}
+  \begin{tabular}{||c c c c||} 
+   \hline
+   Nazwa relacji & Skrót & Wpływ na tury & Wpływ na obrażenia \\ [0.5ex] 
+   \hline\hline
+   Neutralny & \textit{-} & Utrata 1 tury & Brak \\ 
+   \hline
+   Słabość & \textit{Wk} & Naznaczenie 1 tury & +20\% \\
+   \hline
+   Odporność & \textit{Str} & Utrata 1 tury & -20\% \\
+   \hline
+   Niewrażliwość & \textit{Null} & Utrata 2 tur & Zniwelowanie obrażeń \\
+   \hline
+   Odbicie & \textit{Rep} & Utrata 4 tur & Odbicie wartości obrażeń \\
+   \hline
+   Absorpcja & \textit{Abs} & Utrata 4 tur & Wyleczenie o wartość obrażeń \\
+   \hline
+  \end{tabular}
+  \end{center}
+  \end{table}
+Relacja Odbicia nie może nastąpić po raz drugi. W przypadku gdy strona przeciwna również odbija dany Element, obrażenia są niwelowane.
+Dodatkowo, Element Nadzywczajny jako jedyny posiada tylko relację Neutralną.
+
+\chapter{Opis techniczny aplikacji}
+Opis techniczny zawiera szczegółowe informacje na temat wybranych elementów aplikacji. Powstał on w celu rozszerzenia informacji na temat uczenia modelu oraz implementacji systemu walki o konkretne rozwiązania programistyczne użyte w projekcie.
+\section{Implementacja systemu walki}
+System Press Turn opiera się o dwa nowo utworzone obiekty: BattleManager oraz BattleData. BattleManager odpowiada za logikę walki, a BattleData jest bazą postaci oraz umiejętności.
+\subsection{Przygotowanie sceny walki}
+Obiekt BattleData jest tworzony w kreatorze postaci przed wczytaniem się sceny symulatora walki. Bazowo zawiera on listę wszystkich umiejętności dostępnych w projekcie oraz listę stanów postaci (jedyny zaimplementowany stan to stan Śmierci). 
+Uzpełniany jest dodatkowy o dwie listy:
 \begin{itemize}
-  \item{BattleManager - odpowiada za logikę walki},
-  \item{BattleData - przechowuje dane o postaciach, stanach i umiejętnościach}.
+  \item party - przechowującą postaci sterowane przez gracza,
+  \item enemies - przehcowują postać przeciwnika.
 \end{itemize}
-\subsubsection{Zaczytywanie danych oraz startowa konfiguracja obiektów}
-Zanim wczyta się scena BattleScene, w kreatorze jest tworzony obiekt BattleData. Przed wypełnieniem go danymi o postaciach posiada listę ze stanami, 
-jakich postacie mogą doznać (aktualnie zaimplementowany jest tylko stan Śmierci), oraz listę wszystkich umiejętności. Obiekt jest wypełniany danymi z
-kreatora dotyczącymi postaci. Dane te są zapisywane do dwóch list:
-\begin{itemize}
-  \item{party - przechowująca postaci sterowane przez gracza},
-  \item{enemies - przechowująca informacje o postaci przeciwnika}.
-\end{itemize}
-Po wczytaniu się sceny, BattleManager zostaje zainicjowany. Posiada on następujące wartości:
+Gdy scena zostaje wczytana, inicjowany jest BattleManager, który posiada następujące właściwości:
 \begin{itemize}
   \item{selectedSkill - przechowuje informacje na temat wybranej przez postać umiejętności},
   \item{isPlayerTurn - wartość prawda/fałsz mówiąca czy rusza się gracz, bazowo ustawiona na prawdę},
@@ -386,25 +377,24 @@ Po wczytaniu się sceny, BattleManager zostaje zainicjowany. Posiada on następu
   \item{currentIndex - wartość pomocnicza przechowująca indeks aktualnie poruszającej się postaci},
   \item{turnQueue - lista z wartościami prawda fałsz odpowiadająca ilości tur (zwykłe tury to wartości true, naznaczone tury to wartości false)}.
 \end{itemize}
-\pagebreak
-Po wczytaniu wszystkich potrzebnych zasobów, BattleManager ustawia wartości gameState na START\_SIDE oraz isBusy na false.
-\subsubsection{Główna pętla systemu walki}
-\label{petlagry}
-System walki operuje na funkcji Update wykonującej się co klatkę.
+Po wczytaniu wszystkich zasobów, BattleManager ustawia właściwości gameState na START\_SIDE oraz isBusy na false.
+Jest to sygnał dla głównej pętli systemu walki, że może zacząć działać.
+
+\subsection{Główna pętla systemu walki}
+Główna pętla systemu walki, wbrew swojej nazwie, nie opiera się na strukturze pętli dostępnej w języku C\#. Jest to algorytm, który ma za zadanie zapętlić rozgrywkę.
+W tej implementacji algorytm wykorzystuje funkcję Update wbudowaną w silnik Unity, która wykonuje się co wygenerowanie klatki przez silnik tak, aby uruchamiła się odpowiednia funkcja systemu Press Turn w zależności od stanu walki.
 \begin{figure}[H]
   \centering
   \includegraphics[height=10cm]{updatebattle.JPG}
   \caption{Funkcja Update w obiekcie BattleManager, \textit{Źródło: własna inicjatywa}}
-  \label{fig:UpdateBattle}
 \end{figure}
-
-Funkcja obsługuje tzw. pętle gry czyli algorytm zapętlający rozgrywkę. Pętla gry operuje na wywoływaniu 4 funkcji widocznych na \hyperref[fig:UpdateBattle]{Rysunek 4}. Pętla gry przedstawiona w postaci listy kroków prezentuje się następująco:
+\pagebreak
+Opisana pętla gry, przedstawiona w postaci listy kroków, prezentuje się nastepująco:
 \begin{enumerate}
   \item{Wywołuje się StartSide(), które uzupełnia listę tur - turnQueue oraz listę indeksów postaci - moveQueue},
   \item{Następuje aktualizacja currentIndex o pierwszy indeks z moveQueue, przenosząc ten index później na koniec listy moveQueue. Potem zmienia gameState na START\_TURN},
   \item{Wywołuje się StartTurn(), które ustawia wartość currentCharacter na aktualnie poruszającą się postać},
   \item{Jeśli ruch wykonuje gracz aplikacja pokazuje dostępne umiejętności postaci i czeka na reakcję użytkownika},
-  \pagebreak
   \item{Jeśli ruch wykonuje przeciwnik uruchamiana jest funkcja AIActions() która prosi o podjęcie decyzji wytrenowany model ML-Agents w wyborze celu oraz umiejętności},
   \item{Po wyborze umiejętności i celu wykonuje się funkcja UseSkill() uruchamiająca logikę systemu Press Turn},
   \item{Na koniec gameState jest zmieniany na END\_TURN},
@@ -413,87 +403,48 @@ Funkcja obsługuje tzw. pętle gry czyli algorytm zapętlający rozgrywkę. Pęt
   \item{Wywołaj funkcję END\_SIDE, która zmienia wartość isPlayerTurn na przeciwną sobie i zmienia wartość gameState na START\_SIDE. Przejdź do punktu 1.},
   \item{Pokaż ekran końcowy i opuść pętlę gry}.
 \end{enumerate}
-
-\subsubsection{Działanie funkcji UseSkill() oraz wykorzystanie statystyk postaci}
-Wspomniana w pętli gry funkcja UseSkill() pełni kluczową rolę w działaniu systemu walki. Głównym jej zadaniem jest pobranie zasobów (many oraz zdrowia) potrzebnych do użycia wybranej umiejętności, 
-aktywacja umiejętności na wybranym celu oraz zmiana tur na podstawie oceny relacji postaci do elementu umiejętności. Gdy dochodzi do aktywacji umiejętności, statystyki postaci atakującej i broniącej są przekazywane do funkcji przeliczającej obrażenia. 
-Formuły obrażeń prezentują się nastepująco:
+\pagebreak
+\subsection{Funkcja UseSkill}
+Jest to kluczowa funkcja w tej implementacji systemu Press Turn. Pobiera ona zasoby potrzebne do użycia wybranej umiejętności, aktywuje tą umiejętność na wybranym celu oraz zmienia tury na podstawie oceny relacji do Elementu umiejętności.
+W zależności od typu obrażeń, inna formuła obrażeń jest używana do ich przeliczenia. Formuły obrażeń prezentują się nastepująco:
 \[PhysicalAttack = 5\cdot\sqrt{\frac{a.Strength}{b.Dexterity}\cdot m}\]\[MagicalAttack = 5\cdot\sqrt{\frac{a.Magic}{b.Dexterity}\cdot m}\]
 gdzie
 \begin{itemize}
-  \item{a - atakujący},
-  \item{b - broniący},
-  \item{m - stała moc umiejętności}.
+  \item{a - postać atakująca},
+  \item{b - postać broniąca się},
+  \item{m - moc umiejętności}.
 \end{itemize}
-Jedyną niewykorzystaną nigdzie statystyką jest Luck, z uwagi na brak planowanej wcześniej implementacji ciosów krytycznych w systemie walki.
-Statystyka Agility jest wykorzystywana do określenia kolejności w kolejce poruszania się postaci.
 
+\section{Implementacja pakietu ML-Agents}
+Aby zacząć uczyć model za pomocą techniki uczenia przez wzmocnienie potrzebne jest środowisko oraz uczący się w nim agent.
+\subsection{Środowisko}
+Środowiskiem dla agenta jest stworzony wcześniej system Press Turn z którego zostały usunięte elementy UI. Można ich utworzyć nieograniczoną ilość, a każde może być skonfigurowane w inny sposób aby zwiększyć jakość modelu wynikowego.
 
-\section{Część aplikacji automatycznie trenująca model}
-Ta część aplikacji służy do trenowania modelu za pomocą pakietu ML-Agents. Składa się z pojedyńczej sceny Unity: TrainingScene.
-
-\subsection{Implementacja ML-Agents}
-Aby zacząć uczyć model w technice uczenia przez wzmacnianie potrzebne jest środowisko oraz uczący się w nim agent.
-\subsubsection{Środowisko}
-Środowiskiem jest stworzony wcześniej system Press Turn z którego zostały usunięte niepotrzebne funkcje związane z UI. W rolę gracza wcieli się generator liczb losowych. Będzie on wybierał losową, dostępną umiejętność.
-Ilość postaci po stronie gracza jak i statystyki, umiejętności oraz relacje z Elementami będą losowane dla wszystkich postaci. Aby umożliwić powyższe zmieny, dodane zostały następujące elementy do środowiska:
+\pagebreak
+Każde środowisko uczące zawiera następujące parametry pozwalające dostosować proces uczenia:
 \begin{itemize}
-  \label{randomvals}
-  \item{turns - ilość minionych tur},
   \item{maxTurns - maksymalna ilość tur po której środowisko powróci do stanu początkowego},
-  \item{pointsMin - minimalna wartość wykorzystywana do losowania HP oraz MP postaci. Może przyjąć wartość z zakresu \textlangle 1, pointsMax)},
-  \item{pointsMax - maksymalna wartość wykorzystywana do losowania HP oraz MP postaci. Może przyjąć wartość z zakresu (pointsMin, 9999\textrangle},
-  \item{statMin - minimalna wartość wykorzystywana do losowania statystyk postaci. Może przyjąć wartość z zakresu \textlangle 1, statMax)},
-  \item{statMax - maksymalna wartość wykorzystywana do losowania statystyk postaci. Może przyjąć wartość z zakresu (statMin, 99\textrangle},
+  \item{pointsMin - minimalna wartość wykorzystywana do losowania punktów zdrowia oraz punktów many postaci. Może przyjąć wartość z zakresu \textlangle 1, pointsMax)},
+  \item{pointsMax - maksymalna wartość wykorzystywana do losowania punktów zdrowia oraz punktów many postaci. Może przyjąć wartość z zakresu (pointsMin, 9999\textrangle},
+  \item{statMin - minimalna wartość wykorzystywana do losowania pozostałych cech postaci. Może przyjąć wartość z zakresu \textlangle 1, statMax)},
+  \item{statMax - maksymalna wartość wykorzystywana do losowania pozostałych cech postaci. Może przyjąć wartość z zakresu (statMin, 99\textrangle},
   \item{minActors - minimalna wartość wykorzystywana do losowania ilości postaci po stronie gracza. Może przyjąć wartość z zakresu \textlangle 1, maxActors)},
   \item{maxActors - maksymalna wartość wykorzystywana do losowania ilości postaci po stronie gracza. Może przyjąć wartość z zakresu (minActors, 4\textrangle}.
 \end{itemize}
 
-\subsubsection{Agent}
-Implementacja oparta o artykuł~\cite{MLAgentsStartegyGuide}. Aby zaimplementować Agenta za pomocą pakietu ML-Agents należało stworzyć nową klasę dziedziczącą po klasie Agent oraz określić jakie wartości będzie on przewidywał. 
-W przypadku tej pracy Agent będzie przewidywał dwie wartości: 
+\subsection{Agent}
+Aby stworzyć agenta należy stworzyć nową klasę dziedziczącą po klasie z pakietu ML-Agents o nazwie Agent. Następnie należy określić jakie wartości agent będzie przewidywał. W przypadku tej pracy są to dwie wartości:
 \begin{itemize}
-  \item{Indeks wybranej umiejętności},
-  \item{Indeks wybranego aktora}.
+  \item Indeks umiejętności, której agent ma użyć,
+  \item Indeks postaci gracza, na której agent ma użyć umiejętności.
 \end{itemize}
-Klasa Agent wymaga do działania nadpisania niektórych swoich metod. Lista przeciążonych metod wraz z opisem nowej funkcjonalności:
-\begin{itemize}
-  \item{void Heurestic() - z metody została usunięta cała funkcjonalność, przez fakt powodowania niepotrzebnych ostrzeżeń w konsoli Unity. Funkcja pozostaje pusta ze względu na nieużywanie jej w projekcie},
-  \item{void CollectObservations() - metoda zajmuje się zebraniem danych ze środowiska oraz wysłanie ich do analizy (spis wszystkich zmiennych branych pod uwagę podczas uczenia został opisany niżej)},
-  \item{void OnActionReceived() - metoda odczytuje wybrane przez Agenta wartości i przekazuje je do środowiska},
-  \item{void WriteDiscreteMask() - metoda tworzy maskę uniemożliwiającą wybranie przez sztuczną inteligencję umiejętności, do których nie ma dostępu oraz postaci nieżyjących lub nieistniejących},
-  \item{void OnEpisodeBegin() - metoda przywraca stan początkowy środowiska w którym się znajduje}.
-\end{itemize}
-\begin{figure}[H]
-  \centering
-  \subfigure[Funkcja Heurestic() oraz CollectObservations(), \textit{Źródło: własna inicjatywa}]{\includegraphics[width=1\linewidth]{Heurestic_Collect.JPG}}
-  \hfill
-  \subfigure[Funkcja OnActionReceived(), \textit{Źródło: własna inicjatywa}]{\includegraphics[width=1\linewidth]{OnActionReceived.JPG}}
-  \hfill
-  \subfigure[Funkcja WriteDiscreteMask(), \textit{Źródło: własna inicjatywa}]{\includegraphics[width=0.70\linewidth]{Mask.JPG}}
-  \hfill
-\end{figure}
-\begin{figure}[H]
-  \ContinuedFloat
-  \centering
-  \subfigure[Funkcja OnEpisodeBegin(), \textit{Źródło: własna inicjatywa}]{\includegraphics[width=1\linewidth]{Episode.JPG}}
-  \hfill
-  \addtocounter{figure}{1}
-  \caption{Zrzuty ekranu prezentujące ciała nadpisanych funkcji}
-\end{figure}
-Aby ML-Agents mogło działać poprawnie w systemie turowym, trzeba było dodatkowo wyłączyć Automatyczne Kroki Środowiskowe poprzez funkcję Awake() Agenta.
-Powoduje to również konieczność zaimplementowania manualnego wykonywania kroku środowiskowego\footnote{Krok środowiskowy - naznacza moment zmiany wartości w środowisku}.
-Dodatkowo do klasy zostały zaimplementowane dodatkowe metody oraz właściwości pomocnicze opisane w~\cite{MLAgentsStartegyGuide}. Są to:
-\begin{itemize}
-  \item{firstRun - wartość prawda/fałsz określająca czy jest to pierwsze wywołanie metody OnEpisodeBegin()},
-  \item{tryingToReset - wartość prawda/fałsz informująca, że środowisko jest w trakcie resetu},
-  \item{resultGenerated - wartość prawda/fałsz informująca, że model skończył przewidywać wartość i ją zwrócił do środowiska},
-  \item{NotifyEndEpisode() - metoda daje nagrodę sztucznej inteligencji za wykonane akcje i kończy epizod},
-  \item{GetOutput() - metoda czekająca na to, aż ML-Agents zwróci wynik}.
-\end{itemize}
-\subsubsection{Interakcja środowiska z agentem}
-Aby cała struktura uczenia działała, trzeba sprawić aby agent posiadał interakcje ze środowiskiem. W tym celu dostosowano wspomniany w sekcji ,,\nameref{petlagry}'' algorytm pętli gry na potrzeby trenowania modelu.
-Nowy algorytm pętli gry wygląda następująco:
+Aby agent mógł działać poprawnie w systemie turowym, trzeba było dodatkowo wyłączyć Automatyczne Kroki Środowiskowe w funkcji Awake()\footnote{Awake() - wbudowana funkcja silnika Unity uruchamiana tylko jeden raz przed pełnym załadowaniem klasy na scenie.} klasy agenta.
+Powoduje to konieczność implementacji manulanego wykonania kroku środowiskowego\footnote{Krok środowiskowy - naznacza moment zmiany wartości w środowisku}.
+Dalsza implementacja klasy agenta była oparta o artykuł \cite{MLAgentsStartegyGuide}
+
+\pagebreak
+\subsection{Interakcja środowiska z agentem}
+Agent dokonuje interakcji w środowisku za pomocą zmienionej głównej pętli systemu walki. Została ona dostosowana pod trenowanie modelu. Zmodyfikowany algorytm wygląda następująco:
 \begin{enumerate}
   \item{Wywołuje się funkcja OnEpisodeBegin() i całe środowisko jest na nowo losowane, następnie ustawiana jest wartość gameState na START\_SIDE},
   \item{Wywołuje się StartSide(), które uzupełnia listę tur - turnQueue oraz listę indeksów postaci - moveQueue},
@@ -508,9 +459,7 @@ Nowy algorytm pętli gry wygląda następująco:
   \item{Wywołaj funkcję END\_SIDE, która zmienia wartość isPlayerTurn na przeciwną sobie i zmienia wartość gameState na START\_SIDE. Przejdź do punktu 2.},
   \item{Wywołaj funkcje NotifyEndEpisode(), która daje nagrodę dla modelu i powoduje przejście do punktu 1.}
 \end{enumerate}
-\pagebreak
-\subsubsection{Zmienne wybrane do uczenia}
-\label{zmienne}
+\subsection{Zmienne wybrane do uczenia}
 Zmiennych uczących jest łączne 87. W ich skład wchodzą:
 \begin{enumerate}
   \item{Ilość zwykłych tur},
@@ -524,22 +473,6 @@ Zmiennych uczących jest łączne 87. W ich skład wchodzą:
 Wszystkie zmienne są poddane normalizacji według wzoru:
 \[normValue = \frac{value-minValue}{maxValue-minValue}\]
 W przypadku gdy aktor nie został stworzony w danym epizodzie, wszystkie 17 przypisanych do niego zmiennych przyjmuje wartość 0.
-\subsection{UI}
-\begin{figure}[H]
-  \centering
-  \includegraphics[height=8cm]{trainingui.JPG}
-  \caption{Widok UI do nadzoru trenowania modelu, \textit{Źródło: własna inicjatywa}}
-\end{figure}
-\pagebreak
-Widok składa się z 2 elementów:
-\begin{enumerate}
-  \item{Listy środowisk},
-  \item{Panelu szczegółowego}.
-\end{enumerate}
-Elementy te są ze sobą głęboko powiązane. Po naciśnięciu przycisku w liście środowisk, panel szczegółowy zmienia pokazywane dane na te z wybranego środowiska.
-Panel szczegółowy pokazuje wszystkie zmienne w nieznormalizowanej postaci. Są one ustawione w taki sam sposób jak to opisuje lista w sekcji ,,\nameref{zmienne}''.
-Ponadto wyświetlane są ostatnio wybrane wartości przez sztuczną inteligencję w postaci indeksów poszczególnych danych. Dostępny jest również przycisk restartu
-środowiska Reset Env, przywracający je do stanu początkowego.
 
 \chapter{Instrukcja instalacji i korzystania}
 \section{Instalacja}
