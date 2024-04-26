@@ -43,7 +43,7 @@
 {Zastosowanie metod uczenia maszynowego do stworzenia sztucznej inteligencji w turowych grach RPG}
 {Tematem pracy było zaimplementowanie sztucznej inteligencji uczącej się za pomocą metod uczenia maszynowego w turowej grze RPG. 
 Wytrenowany model ma sam podejmować decyzje o używanych akcjach w środowisku gry. Praca składa się z pięciu głównych części.
-Pierwsza część omawia technologie wykorzystane w pracy oraz ich alternatywy. Druga część skupia się prezentacji gotowej aplikacji.
+Pierwsza część omawia technologie wykorzystane w pracy oraz ich alternatywy. Druga część skupia się na prezentacji gotowej aplikacji.
 Trzecia część to opis techniczny wybranych elementów aplikacji. Czwarta część zawiera instrukcję użytkowania gotowej aplikacji. 
 W piątej części znajduje się podsumowanie, zawierające wyniki oraz wnioski wynikające z implementacji rozwiązania.}
 {uczenie maszynowe, sztuczna inteligencja, gry RPG, uczenie przez wzmacnianie, turowe systemy walki}
@@ -120,7 +120,7 @@ Sam silnik graficzny Unreal Engine jest narzędziem z bardzo dużym wsparciem i 
 Dokumentacja zarówno silnika Unreal Engine jak i pakietu Learning Agents znajduje się w~\cite{UnrealDocs}.
 \subsection{Własny silnik z wykorzystaniem różnych pakietów do uczenia maszynowego}
 Rozwiązanie oferujące największą swobodę, ale też najtrudniejsze w implementacji. Do stworzenia środowiska gry potrzebna jest biblioteka graficzna pomagająca stworzyć silnik np. OpenGL
-lub pakiet do stworzenia aplikacji okienkowej np. PyGame. Wybierając pakiet do uczenia maszynowego warto szukać wśród pakietów Pythona, gdyż ma on ich bardzo dużo. Dla uczenia przez wzmocnienie można zastosować pakiet PyTorch\footnote{Używany w ML-Agents oraz Learning Agents}
+lub pakiet do stworzenia aplikacji okienkowej np. PyGame. Wybierając pakiet do uczenia maszynowego warto szukać wśród pakietów Pythona, gdyż ma on ich bardzo dużo. Dla uczenia przez wzmacnianie można zastosować pakiet PyTorch\footnote{Używany w ML-Agents oraz Learning Agents}
 lub też jeden z czterech pakietów wykorzystywanych przez RL Agents.
 \subsection*{Wybrany silnik i pakiet do uczenia maszynowego}
 Do pracy wybrałem Unity z pakietem ML-Agents przez wzgląd na moje wcześniejsze doświadczenie z Unity i językiem C\#. Uważam jednak, że dużo bardziej rozbudowany RL Agents na silniku Godot jest lepszym wyborem do tego typu projektu, gdyż daje dużo większe pole do dostosowania uczenia dla osiągnięcia lepszych rezultatów.
@@ -206,14 +206,8 @@ Gdy stronie wykonującej akcje skończą się tury, następuje zmiana stron. Wi�
 Do implementacji został wybrany system Press Turn. Mimo swojego skomplikowania (co może spowodować dłuższy czas uczenia modelu) posiada on bardzo dużo ciekawych interakcji związanych z turami, które sztuczna inteligencja będzie mogła wykorzystać na swoją korzyść.
 
 \chapter{Opis działania aplikacji}
-Projekt składa się z dwóch aplikacji:
-\begin{itemize}
-  \item Testującej model (symulator walki),
-  \item Uczącej model.
-\end{itemize}
-Aplikacje nie są kompilowane do plików uruchomieniowych, gdyż działają na funkcji testowania gry w Unity.
-Funkcja ta jest wymagana przez pakiet ML-Agents do uczenia modelu.
-Powoduje to konieczność zainstalowania silnika Unity, aby móc uruchomić obie aplikacje.
+Poniższy rozdział przedstawia informacje na temat działania aplikacji występujących w projekcie. Przedstawione są w nim kolejno funkcjonalności obu programów wynikowych, opis architektoniczny projektu oraz bardziej szczegółowe informacje o zaimplementowanym w projekcie systemie walki Press Turn.
+
 \section{Aplikacja testująca model}
 Aplikacja testująca model została stworzona w postaci symulatora walki dla systemu Press Turn. Umożliwia ona dostosowanie statystyk postaci gracza jak i przeciwnika sterowanego przez wytrenowany model.
 Składa się z 3 widoków:
@@ -225,7 +219,7 @@ Składa się z 3 widoków:
 
 \subsection{Menu główne}
 Zawiera przycisk przechodzący do kreatora postaci, przycisk umożliwiający wyjście z aplikacji oraz menu opcji w którym jest możliwość dostosowania głośności muzyki i dźwięków w symulatorze.
-Ustawienia graficzne nie były potrzebne w aplikacji przez uruchamianie jej w środowisku testowym Unity, które dostosowywuje rozdzielczość do okna aplikacji.
+Ustawienia graficzne nie były potrzebne w aplikacji z powodu uruchamiania jej bezpośrednio na silniku Unity\footnote{Więcej informacji w rozdziale ,,\nameref{architecture}''}.
 
 \begin{figure}[H]
   \includegraphics[width=1\textwidth]{menuscreen1.JPG}
@@ -268,9 +262,9 @@ Ułożenie elementów dla widoku symulatora zostało oparte o UI\footnote{UI (an
   \includegraphics[width=1\textwidth]{smt3_screenshot.jpg}
   \caption{UI sceny walki z gry Shin Megami Tensei III: Nocturne, \textit{Źródło:~\cite{SMT3}}}
 \end{figure}
+\pagebreak
 \section{Aplikacja trenująca model}
 Aplikacja trenująca model zawiera tylko jeden widok. Zawiera on element pokazujący aktualny stan środowiska uczącego oraz listę tych środowisk. 
-\pagebreak
 
 Domyślnie pokazywany jest stan pierwszego środowiska, jednak można to zmienić klikając na przycisk z nazwą innego środowiska uczącego. 
 Oprócz cech postaci i informacji o turach, widocznych również w aplikacji testującej model, w widoku jest dostępny przycisk resetujący środowisko oraz informacja o ostatnio wybranej umiejętności i postaci gracza przez trenowany model.
@@ -284,6 +278,31 @@ Ilość środowisk, zakresy losowania statystyk, nagrody, kary i liczba tur potr
   \includegraphics[width=1\textwidth]{trainingui.JPG}
   \caption{Widok UI do nadzoru trenowania modelu, \textit{Źródło: własna inicjatywa}}
 \end{figure}
+\pagebreak
+\section{Architektura projektu}
+\label{architecture}
+Projekt wykorzystuje środowisko Unity do uruchomienia obu aplikacji. 
+Jest to spowodowane wykorzystaniem pakietu ML-Agents, który wymaga aby uczenie odbywało się na funkcji testowania gry w silniku.
+Z powyższego powodu, aplikacje nie mogą zostać skompilowane do plików uruchomieniowych, co powoduje konieczność pobrania kodu źródłowego projektu aby móc go uruchomić.
+Aplikacje nie mają również ustawień graficznych, gdyż opcje chociażby rozdzielczości ekranu ustawia się w oknie środowiska Unity.
+%Obie aplikacje nie są kompilowane do plików uruchomieniowych, gdyż działają na funkcji testowania gry w Unity.
+%Funkcja ta jest wymagana przez pakiet ML-Agents do uczenia modelu.
+%Powoduje to konieczność zainstalowania silnika Unity, aby móc uruchomić obie aplikacje.
+
+Oprócz wcześniej opisanych widoków, aplikacja składa się również z komponentów działających w tle.
+W przypadku aplikacji testującej model występują 2 niezależne od siebie komponenty - Menedżer Walki oraz Baza Wiedzy. 
+Pierwszy odpowiada za logikę walki na scenie Symulatora Walki, a drugi za przechowywanie stałych danych walki, oraz transfer informacji o postaciach między Kreatorem Postaci a Symulatorem.
+
+Aplikacja trenująca model posiada 1 komponent - Menedżer Treningu. Zawiera dane o walce, jak i jej logikę, oraz 
+odpowiada za komunikację z uruchomionym na interpreterze Pythona pakietem uczącym ML-Agents. Interpreter Pythona trenuje model, a po skończeniu uczenia zapisuje go do pamięci systemu.
+Model ten może być później wykorzystany w symulacji walki.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[height=10cm]{architecture.JPG}
+  \caption{Wersja graficzna architektury projektu, \textit{Źródło: własna inicjatywa}}
+\end{figure}
+
 \pagebreak
 \section{Walka w systemie Press Turn}
 \label{systempressturn}
@@ -361,10 +380,10 @@ Opis techniczny zawiera szczegółowe informacje na temat wybranych elementów a
 System Press Turn opiera się o dwa nowo utworzone obiekty: BattleManager oraz BattleData. BattleManager odpowiada za logikę walki, a BattleData jest bazą postaci oraz umiejętności.
 \subsection{Przygotowanie sceny walki}
 Obiekt BattleData jest tworzony w kreatorze postaci przed wczytaniem się sceny symulatora walki. Bazowo zawiera on listę wszystkich umiejętności dostępnych w projekcie oraz listę stanów postaci (jedyny zaimplementowany stan to stan Śmierci). 
-Uzpełniany jest dodatkowy o dwie listy:
+Uzupełniany jest dodatkowo o dwie listy:
 \begin{itemize}
   \item party - przechowującą postaci sterowane przez gracza,
-  \item enemies - przehcowują postać przeciwnika.
+  \item enemies - przechowującą postać przeciwnika.
 \end{itemize}
 Gdy scena zostaje wczytana, inicjowany jest BattleManager, który posiada następujące właściwości:
 \begin{itemize}
@@ -386,6 +405,7 @@ W tej implementacji algorytm wykorzystuje funkcję Update wbudowaną w silnik Un
 \begin{figure}[H]
   \centering
   \includegraphics[height=10cm]{updatebattle.JPG}
+  \addtocounter{figure}{8}
   \caption{Funkcja Update w obiekcie BattleManager, \textit{Źródło: własna inicjatywa}}
 \end{figure}
 \pagebreak
@@ -416,7 +436,7 @@ gdzie
 \end{itemize}
 
 \section{Implementacja pakietu ML-Agents}
-Aby zacząć uczyć model za pomocą techniki uczenia przez wzmocnienie potrzebne jest środowisko oraz uczący się w nim agent.
+Aby zacząć uczyć model za pomocą techniki uczenia przez wzmacnianie potrzebne jest środowisko oraz uczący się w nim agent.
 \subsection{Środowisko}
 Środowiskiem dla agenta jest stworzony wcześniej system Press Turn z którego zostały usunięte elementy UI. Można ich utworzyć nieograniczoną ilość, a każde może być skonfigurowane w inny sposób aby zwiększyć jakość modelu wynikowego.
 
@@ -623,7 +643,7 @@ wyniki w postaci średniej nagrody za akcję równej 0.506 oraz odchylenia stand
   \centering
   \noindent\makebox[\textwidth]{
     \includegraphics[width=1.1\textwidth, height=4.5cm]{results.JPG}}
-  \addtocounter{figure}{6}
+  \addtocounter{figure}{9}
   \caption{Wyniki wyświetlone w aplikacji konsolowej ML-Agents, \textit{Źródło: własna inicjatywa}}
 \end{figure}
 \subsection{Uruchomienie i analiza zachowania modelu}
